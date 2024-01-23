@@ -1,0 +1,6 @@
+@Unpublished{tradingstrattester2024,
+    Title  = {This project tests several different trading strategies on test depots using real data of different asset classes.},
+    Author = {Justin Franken},
+    Year   = {2024},
+    Url    = {https://github.com/justinfranken/tradingstrattester}
+}
