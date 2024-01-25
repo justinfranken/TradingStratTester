@@ -12,6 +12,9 @@
 # bld
 bld/
 
+# _final_project_ideas
+_final_project_ideas/
+
 # latex
 *.aux
 *.bbl
