@@ -3,13 +3,14 @@
 from datetime import date, datetime, timedelta
 
 import yfinance as yf
+from tradingstrattester.config import FREQUENCIES, MAX_DAYS
 
 
 def data_download(symbol, end_date=None, start_date=None, frequency="60m"):
     """Download financial data for a given stock symbol within a specified time range
     and frequency.
 
-    Parameters:
+    Args:
     - symbol (str): The stock symbol for which data is being downloaded.
     - frequency (str): The frequency of the data, e.g., "1m", "5m", "15m", "60m", "90m", "1d".
     - start_date (str, optional): The start date in the format "YYYY-MM-DD". If None, start_date will be set to the maximum possible time difference.
@@ -26,7 +27,7 @@ def data_download(symbol, end_date=None, start_date=None, frequency="60m"):
 def _define_dates(frequency, start_date=None, end_date=None):
     """Define start and end dates based on the specified frequency.
 
-    Parameters:
+    Args:
     - frequency (str): The frequency for which dates are being calculated.
     - start_date (str, optional): The start date in the format "YYYY-MM-DD". If None, start_date will be set to the maximum possible time difference.
     - end_date (str, optional): The end date in the format "YYYY-MM-DD". If None, end_date will be set to today's date.
@@ -38,9 +39,7 @@ def _define_dates(frequency, start_date=None, end_date=None):
     _handle_errors_in_define_dates(start_date, end_date, frequency)
 
     # Define correct start_date and end_date strings
-    different_frequencies = ["1m", "5m", "15m", "60m", "90m", "1d"]
-    max_days = [7, 59, 59, 729, 59, 10_000]
-    max_days_for_frequency = dict(zip(different_frequencies, max_days))
+    max_days_for_frequency = dict(zip(FREQUENCIES, MAX_DAYS))
 
     if start_date is not None:
         start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
@@ -76,9 +75,9 @@ def _handle_errors_in_define_dates(start_date, end_date, frequency):
     - ValueError: If start_date or end_date have not the correct 'YYYY-MM-DD' format or end_date <= start_date and if selected frequency is not available.
 
     """
-    different_frequencies = ["1m", "5m", "15m", "60m", "90m", "1d"]
-    if frequency not in different_frequencies:
-        msg = f"Invalid frequency: {frequency}. Supported frequencies are {different_frequencies}"
+    FREQUENCIES = ["1m", "5m", "15m", "60m", "90m", "1d"]
+    if frequency not in FREQUENCIES:
+        msg = f"Invalid frequency: {frequency}. Supported frequencies are {FREQUENCIES}"
         raise ValueError(
             msg,
         )
