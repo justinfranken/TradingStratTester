@@ -7,7 +7,7 @@ BLD = SRC.joinpath("..", "..", "bld").resolve()
 TEST_DIR = SRC.joinpath("..", "..", "tests").resolve()
 PAPER_DIR = SRC.joinpath("..", "..", "paper").resolve()
 
-FREQUENCIES = ["5m", "60m", "1d"]
+FREQUENCIES = ["2m", "60m", "1d"]
 MAX_DAYS = [59, 729, 10**1000]
 ASSETS = ["MSFT", "DB", "EURUSD=X", "GC=F", "^TNX"]
 
