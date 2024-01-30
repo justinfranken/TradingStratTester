@@ -39,7 +39,7 @@ asset from [Yahoo Finance](https://de.finance.yahoo.com/) in:
 src / tradingstrattester / config.py
 ```
 
-Here you can simply change the list object **ASSET**:
+Here you can simply change the list object **ASSET**, for example:
 
 ```python
 ASSETS = ["MSFT", "DB", "EURUSD=X", "GC=F", "^TNX"]
@@ -53,33 +53,28 @@ the following frequencies:
 - **High frequency**: 2 minute, 5 minute
 - **Reproducible frequency**: 1 day, from "2004-01-01" until "2024-01-01"
 
-[!NOTE]
-Since [Yahoo Finance](https://de.finance.yahoo.com/) is limmiting the maximal
-possible history of data to download _(e.g. only 7 days back from today for frequency 1
-minute)_ we fix the observed period of daily dates from "2004-01-01" until "2024-01-01"
-in order to have reproducible analysis results for one frequency. High frequency data is
-always up-to-date.
+> [!NOTE]
+> Since [Yahoo Finance](https://de.finance.yahoo.com/) is limmiting the maximal possible history of data to download _(e.g. only 7 days back from today for frequency 1 minute)_ we fix the observed period of daily dates from "2004-01-01" until "2024-01-01" in order to have reproducible analysis results for one frequency. High frequency data is always up-to-date.
 
-But [yfinance](https://github.com/ranaroussi/yfinance) is providing several different
-possible frequencies where the maximum possible start date to end date length is in
-brackets:
+But [yfinance](https://github.com/ranaroussi/yfinance) is providing several different possible frequencies:
 
-- 1 minute (max possible history: 7 days)
-- [x] 2 minute (max possible history: 60 days)
-- 5 minute (max possible history: 60 days)
-- 15 minute (max possible history: 60 days)
-- 30 minute (max possible history: 60 days)
-- [x] 60 minute (max possible history: 730 days)
-- 90 minute (max possible history: 60 days)
-- [x] 1 day (max possible history: infinity)
-- 5 days (max possible history: infinity)
-- 1 week (max possible history: infinity)
-- 1 month (max possible history: infinity)
-- 3 months (max possible history: infinity)
+|   Frequency   | Maximum possible history from today | Variable Name | Include in 'MAX_DAYS' as |
+| :---:   | :---: | :---: | :---: |
+| 1 Minute | 7 days | "1m" | 7 |
+| 2 Minute | 60 days | "2m" | 59 |
+| 5 Minute | 60 days | "5m" | 59 |
+| 15 Minute | 60 days | "15m" | 59 |
+| 30 Minute | 60 days | "30m" | 59 |
+| 60 Minute | 730 days | "60m" | 729 |
+| 90 Minute | 60 days | "90m" | 59 |
+| 1 Day | Infinity | "1d" | 10 ** 1000 |
+| 5 Days | Infinity | "5d" | 10 ** 1000 |
+| 1 Week | Infinity | "1wk" | 10 ** 1000 |
+| 1 Months | Infinity | "1mo" | 10 ** 1000 |
+| 3 Months | Infinity | "3mo" | 10 ** 1000 |
 
 You are free to add new of the above frequencies to test the outcome of our trading
-strategies. In order to try out new frequencies you need to include the new frequency
-in:
+strategies. In order to try out new frequencies you need to include the new frequency as you can see in above table in:
 
 ```
 src / tradingstrattester / config.py
@@ -92,11 +87,8 @@ FREQUENCIES = ["2m", "60m", "1d"]
 MAX_DAYS = [59, 729, 10**1000]
 ```
 
-[!CAUTION]
-In order to have a correctly working project you have to add the maximum
-possible history in the same order in **MAX_DAYS** as you have included frequencies in
-**FREQUENCIES** and also subtract one day from that history as you can see in the
-example above. For infinity history just write 10 \*\* 1000.
+> [!CAUTION]
+> In order to have a correctly working project you have to add the maximum possible history in the same order in **MAX_DAYS** as you have included frequencies in **FREQUENCIES** and also subtract one day from that history as you can see in the table above.
 
 ## Pictures / Analysis results ?!
 
