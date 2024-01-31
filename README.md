@@ -50,7 +50,7 @@ ASSETS = ["MSFT", "DB", "EURUSD=X", "GC=F", "^TNX"]
 The data we downloaded have different observed granularity. In this project we focus on
 the following frequencies:
 
-- **High frequency**: 2 minute, 5 minute
+- **High frequency**: 2 minute, 60 minute
 - **Reproducible frequency**: 1 day, from "2004-01-01" until "2024-01-01"
 
 > [!NOTE]
