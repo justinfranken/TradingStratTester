@@ -100,7 +100,7 @@ To get started, create and activate the environment with
 
 ```console
 $ conda/mamba env create
-$ conda activate ass5
+$ conda activate tst
 ```
 
 In order to create the full reproducible project type the following into your console,

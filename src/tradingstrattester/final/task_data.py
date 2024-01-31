@@ -4,7 +4,7 @@ import pytask
 from tradingstrattester.config import ASSETS, BLD, FREQUENCIES
 from tradingstrattester.data_management.data_functions import data_download
 
-# Task function for "1d" frequency data for reproducibility of analysis and plots
+# Task function for "1d" frequency data to generate reproducibility
 for asset in ASSETS:
     """Download financial data and store it in the bld folder."""
 

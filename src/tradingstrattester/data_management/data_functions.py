@@ -6,13 +6,13 @@ import yfinance as yf
 from tradingstrattester.config import FREQUENCIES, MAX_DAYS
 
 
-def data_download(symbol, end_date=None, start_date=None, frequency="60m"):
+def data_download(symbol, frequency="60m", start_date=None, end_date=None):
     """Download financial data for a given stock symbol within a specified time range
     and frequency.
 
     Args:
     - symbol (str): The stock symbol for which data is being downloaded.
-    - frequency (str): The frequency of the data, e.g., "1m", "5m", "15m", "60m", "90m", "1d".
+    - frequency (str, optional): The frequency of the data, e.g., "1m", "5m", "15m", "60m", "90m", "1d".
     - start_date (str, optional): The start date in the format "YYYY-MM-DD". If None, start_date will be set to the maximum possible time difference.
     - end_date (str, optional): The end date in the format "YYYY-MM-DD". If None, end_date will be set to today's date.
 
@@ -75,7 +75,6 @@ def _handle_errors_in_define_dates(start_date, end_date, frequency):
     - ValueError: If start_date or end_date have not the correct 'YYYY-MM-DD' format or end_date <= start_date and if selected frequency is not available.
 
     """
-    FREQUENCIES = ["1m", "5m", "15m", "60m", "90m", "1d"]
     if frequency not in FREQUENCIES:
         msg = f"Invalid frequency: {frequency}. Supported frequencies are {FREQUENCIES}"
         raise ValueError(
@@ -93,7 +92,7 @@ def _handle_errors_in_define_dates(start_date, end_date, frequency):
                     msg,
                 )
         elif not isinstance(input_string, type(None) | str):
-            msg = f"{input_string} is {type(end_date)} but must be a string or a type(None)."
+            msg = f"{input_string} is {type(input_string)} but must be a string or a type(None)."
             raise TypeError(
                 msg,
             )
