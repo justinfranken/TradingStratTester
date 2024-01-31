@@ -1,9 +1,12 @@
 """"Test for the data management functions."""
 
+from datetime import date
+
 import pandas as pd
 import pytest
 from tradingstrattester.config import ASSETS
 from tradingstrattester.data_management.data_functions import (
+    _define_dates,
     _handle_errors_in_define_dates,
     data_download,
 )
@@ -22,12 +25,66 @@ def test_is_pd_DataFrame_data_download(assets):
     assert isinstance(data_download(assets), pd.core.frame.DataFrame)
 
 
+# Test _define_dates
+valid_value_start = [
+    "2023-01-01",
+    "2023-01-01",
+    None,
+    None,
+]
+valid_value_end = [
+    "2024-01-01",
+    None,
+    "2024-01-01",
+    None,
+]
+EXPECTED_START = [
+    "2023-01-01",
+    "2023-01-01",
+    None,
+    None,
+]
+EXPECTED_END = [
+    "2024-01-01",
+    date.today().strftime("%Y-%m-%d"),
+    "2024-01-01",
+    date.today().strftime("%Y-%m-%d"),
+]
+
+
+@pytest.mark.parametrize(
+    ("start_date", "end_date", "expected_start", "expected_end"),
+    zip(valid_value_start, valid_value_end, EXPECTED_START, EXPECTED_END),
+)
+def test__define_dates_outcome(start_date, end_date, expected_start, expected_end):
+    """Test the outcome of _define_dates."""
+    result = _define_dates(frequency="1d", start_date=start_date, end_date=end_date)
+    assert result == (expected_start, expected_end)
+
+
 # Test _handle_errors_in_define_dates
-value_start = ["2024-01-01", "typo", "2024-01-01", "01-01-2024", "typo", "2024-01-01"]
-value_end = ["typo", "2024-01-01", "01-01-2024", "2024-01-01", "typo", "2023-01-01"]
+invalid_value_start = [
+    "2024-01-01",
+    "typo",
+    "2024-01-01",
+    "01-01-2024",
+    "typo",
+    "2024-01-01",
+]
+invalid_value_end = [
+    "typo",
+    "2024-01-01",
+    "01-01-2024",
+    "2024-01-01",
+    "typo",
+    "2023-01-01",
+]
 
 
-@pytest.mark.parametrize(("start_date", "end_date"), zip(value_start, value_end))
+@pytest.mark.parametrize(
+    ("start_date", "end_date"),
+    zip(invalid_value_start, invalid_value_end),
+)
 def test__handle_errors_in_define_dates_value_error_dates(start_date, end_date):
     """Test the value error handling of dates in _handle_error_in_define_dates."""
     with pytest.raises(ValueError):

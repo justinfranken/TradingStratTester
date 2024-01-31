@@ -29,11 +29,11 @@ def _define_dates(frequency, start_date=None, end_date=None):
 
     Args:
     - frequency (str): The frequency for which dates are being calculated.
-    - start_date (str, optional): The start date in the format "YYYY-MM-DD". If None, start_date will be set to the maximum possible time difference.
+    - start_date (str, optional): The start date in the format "YYYY-MM-DD". If None, start_date will be set to None or the maximum possible time difference.
     - end_date (str, optional): The end date in the format "YYYY-MM-DD". If None, end_date will be set to today's date.
 
     Returns:
-    Tuple[str, str]: A tuple containing the formatted start and end dates in the format "YYYY-MM-DD".
+    Tuple[Optional[str], str]: A tuple containing the formatted start and end dates in the format "YYYY-MM-DD".
 
     """
     _handle_errors_in_define_dates(start_date, end_date, frequency)
@@ -41,10 +41,17 @@ def _define_dates(frequency, start_date=None, end_date=None):
     # Define correct start_date and end_date strings
     max_days_for_frequency = dict(zip(FREQUENCIES, MAX_DAYS))
 
-    if start_date is not None:
-        start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+    if frequency == "1d" and start_date is None:
+        start_date_result = None
     else:
-        start_date = date.today() - timedelta(days=max_days_for_frequency[frequency])
+        if start_date is not None:
+            start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+            start_date_result = start_date.strftime("%Y-%m-%d")
+        else:
+            start_date = date.today() - timedelta(
+                days=max_days_for_frequency[frequency],
+            )
+            start_date_result = start_date.strftime("%Y-%m-%d")
 
     if end_date is not None:
         end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
@@ -52,19 +59,24 @@ def _define_dates(frequency, start_date=None, end_date=None):
         end_date = date.today()
 
     # Check if the difference between start_date and end_date after creation does not exceed max_days and start_date < end_date
-    max_allowed_days = max_days_for_frequency.get(frequency, None)
-    if max_allowed_days is not None and (end_date - start_date).days > max_allowed_days:
-        msg = f"The difference between end_date and start_date exceeds the maximum allowed days ({max_allowed_days}) for the selected frequency."
-        raise ValueError(
-            msg,
-        )
-    if start_date >= end_date:
-        msg = f"end_date ({end_date}) must be greater than start_date({start_date})."
-        raise ValueError(
-            msg,
-        )
+    if frequency == "1d" and start_date is None:
+        pass
+    else:
+        max_allowed_days = max_days_for_frequency.get(frequency, None)
+        if (
+            max_allowed_days is not None
+            and (end_date - start_date).days > max_allowed_days
+        ):
+            msg = f"The difference between end_date and start_date exceeds the maximum allowed days ({max_allowed_days}) for the selected frequency."
+            raise ValueError(msg)
 
-    return start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")
+        if start_date >= end_date:
+            msg = (
+                f"end_date ({end_date}) must be greater than start_date({start_date})."
+            )
+            raise ValueError(msg)
+
+    return start_date_result, end_date.strftime("%Y-%m-%d")
 
 
 def _handle_errors_in_define_dates(start_date, end_date, frequency):
