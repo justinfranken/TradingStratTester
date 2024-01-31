@@ -71,10 +71,17 @@ def _handle_errors_in_define_dates(start_date, end_date, frequency):
     """Handle type and value errors for _define_dates.
 
     Raises:
-    - TypeError: If start_date or end_date is not a string nor a type(None).
-    - ValueError: If start_date or end_date have not the correct 'YYYY-MM-DD' format or end_date <= start_date and if selected frequency is not available.
+    - TypeError: If start_date or end_date is not a string nor a type(None). If frequency is not a string.
+    - ValueError: If start_date or end_date have not the correct 'YYYY-MM-DD' format or end_date <= start_date. If selected frequency is not available.
 
     """
+    # Check if frequency has correct type and format
+    if not isinstance(frequency, str):
+        msg = f"{frequency} is {type(frequency)} but must be a string."
+        raise TypeError(
+            msg,
+        )
+
     if frequency not in FREQUENCIES:
         msg = f"Invalid frequency: {frequency}. Supported frequencies are {FREQUENCIES}"
         raise ValueError(
@@ -83,19 +90,15 @@ def _handle_errors_in_define_dates(start_date, end_date, frequency):
 
     # Check if start_date and end_date are in the correct format
     for input_string in [start_date, end_date]:
-        if isinstance(input_string, str):
+        if not isinstance(input_string, type(None) | str):
+            msg = f"{input_string} is {type(input_string)} but must be a string or a type(None)."
+            raise TypeError(msg)
+        elif isinstance(input_string, str):
             try:
                 datetime.strptime(input_string, "%Y-%m-%d")
             except ValueError:
                 msg = f"Invalid date format: {input_string}. It should be in the format 'YYYY-MM-DD'."
-                raise ValueError(
-                    msg,
-                )
-        elif not isinstance(input_string, type(None) | str):
-            msg = f"{input_string} is {type(input_string)} but must be a string or a type(None)."
-            raise TypeError(
-                msg,
-            )
+                raise ValueError(msg)
 
     # Check if end_date is greater than or equal to start_date
     if end_date is not None and start_date is not None and end_date <= start_date:
