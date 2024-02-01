@@ -20,7 +20,9 @@ def data_download(symbol, frequency="60m", start_date=None, end_date=None):
     pandas.DataFrame: A DataFrame containing the financial data.
 
     """
+    _handle_errors_in_define_dates(start_date, end_date, frequency)
     dates = _define_dates(frequency=frequency, start_date=start_date, end_date=end_date)
+
     return yf.download(symbol, start=dates[0], end=dates[1], interval=frequency)
 
 
@@ -36,8 +38,6 @@ def _define_dates(frequency, start_date=None, end_date=None):
     Tuple[Optional[str], str]: A tuple containing the formatted start and end dates in the format "YYYY-MM-DD".
 
     """
-    _handle_errors_in_define_dates(start_date, end_date, frequency)
-
     # Define correct start_date and end_date strings
     max_days_for_frequency = dict(zip(FREQUENCIES, MAX_DAYS))
 
