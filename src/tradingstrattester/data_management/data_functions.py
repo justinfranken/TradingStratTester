@@ -20,7 +20,7 @@ def data_download(symbol, frequency="60m", start_date=None, end_date=None):
     pandas.DataFrame: A DataFrame containing the financial data.
 
     """
-    _handle_errors_in_define_dates(start_date, end_date, frequency)
+    _handle_errors_data_download(start_date, end_date, frequency)
     dates = _define_dates(frequency=frequency, start_date=start_date, end_date=end_date)
 
     return yf.download(symbol, start=dates[0], end=dates[1], interval=frequency)
@@ -79,7 +79,7 @@ def _define_dates(frequency, start_date=None, end_date=None):
     return start_date_result, end_date.strftime("%Y-%m-%d")
 
 
-def _handle_errors_in_define_dates(start_date, end_date, frequency):
+def _handle_errors_data_download(start_date, end_date, frequency):
     """Handle type and value errors for _define_dates.
 
     Raises:

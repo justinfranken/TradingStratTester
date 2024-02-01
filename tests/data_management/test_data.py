@@ -7,7 +7,7 @@ import pytest
 from tradingstrattester.config import ASSETS
 from tradingstrattester.data_management.data_functions import (
     _define_dates,
-    _handle_errors_in_define_dates,
+    _handle_errors_data_download,
     data_download,
 )
 
@@ -85,10 +85,10 @@ invalid_value_end = [
     ("start_date", "end_date"),
     zip(invalid_value_start, invalid_value_end),
 )
-def test__handle_errors_in_define_dates_value_error_dates(start_date, end_date):
+def test__handle_errors_data_download_value_error_dates(start_date, end_date):
     """Test the value error handling of dates in _handle_error_in_define_dates."""
     with pytest.raises(ValueError):
-        _handle_errors_in_define_dates(
+        _handle_errors_data_download(
             start_date=start_date,
             end_date=end_date,
             frequency="60m",
@@ -99,30 +99,30 @@ invalid_frequencies = ["60", "3m", "typo"]
 
 
 @pytest.mark.parametrize("frequency", invalid_frequencies)
-def test__handle_errors_in_define_dates_value_error_frequency(frequency):
+def test__handle_errors_data_download_value_error_frequency(frequency):
     """Test the value error handling of frequency in _handle_error_in_define_dates."""
     with pytest.raises(ValueError):
-        _handle_errors_in_define_dates(
+        _handle_errors_data_download(
             start_date="2024-01-01",
             end_date="2024-01-05",
             frequency=frequency,
         )
 
 
-def test__handle_errors_in_define_dates_type_error_dates():
+def test__handle_errors_data_download_type_error_dates():
     """Test the type error handling of dates in _handle_error_in_define_dates."""
     with pytest.raises(TypeError):
-        _handle_errors_in_define_dates(
+        _handle_errors_data_download(
             start_date=1,
             end_date="2024-01-05",
             frequency="60m",
         )
 
 
-def test__handle_errors_in_define_dates_type_error_frequency():
+def test__handle_errors_data_download_type_error_frequency():
     """Test the type error handling of frequency in _handle_error_in_define_dates."""
     with pytest.raises(TypeError):
-        _handle_errors_in_define_dates(
+        _handle_errors_data_download(
             start_date="2024-01-01",
             end_date="2024-01-05",
             frequency=1,
