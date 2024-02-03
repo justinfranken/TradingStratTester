@@ -34,7 +34,9 @@ for frequency in FREQUENCIES:
 
         @pytask.task(id=_id[state])
         def task_download_high_frequency_data(
+            symbol=asset,
+            frequency=frequency,
             produces=BLD / "python" / "data" / f"{_id[state]}.pkl",
         ):
-            high_frequency_data = data_download(asset, frequency=frequency)
+            high_frequency_data = data_download(symbol, frequency=frequency)
             high_frequency_data.to_pickle(produces)
