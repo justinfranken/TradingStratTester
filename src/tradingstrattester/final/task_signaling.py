@@ -23,9 +23,9 @@ for signal_generator in STRATEGIES:
     ):
         strategy_dict = {}
         for i in range(len(_id)):
-            key = f"signal_{id[i]}"
+            name = f"signal_{_id[i]}"
             data = pd.read_pickle(depends_on[i])
-            strategy_dict[key] = signal_list(data, signal_generator)
+            strategy_dict[name] = signal_list(data, signal_generator)
 
         with open(produces, "wb") as file:
             pickle.dump(strategy_dict, file)

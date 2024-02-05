@@ -34,9 +34,9 @@ def _simple_signal_generator(data):
 
     Returns:
     - int: An integer representing the signal generated:
-           - 1 for a bearish pattern
-           - 2 for a bullish pattern
-           - 0 for no clear pattern
+           - 1 for a bearish pattern, i.e. sell
+           - 2 for a bullish pattern, i.e. buy
+           - 0 for no clear pattern, i.e. do nothing
 
     """
     open = data.Open.iloc[-1]
