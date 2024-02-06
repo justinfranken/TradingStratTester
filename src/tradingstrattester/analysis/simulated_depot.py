@@ -36,9 +36,9 @@ def simulated_depot(
 
             value.append(units[i] * data.Close.iloc[i] + cash[i])
 
-        cash_dict[id] = cash
-        unit_dict[id] = units
-        value_dict[id] = value
+        cash_dict[id.split(".")[0]] = cash
+        unit_dict[id.split(".")[0]] = units
+        value_dict[id.split(".")[0]] = value
 
     return {
         "cash_dict": cash_dict,
