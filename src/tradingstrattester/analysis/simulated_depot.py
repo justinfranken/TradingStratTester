@@ -4,7 +4,7 @@ import pandas as pd
 from tradingstrattester.config import BLD
 
 
-def process_strategy(
+def simulated_depot(
     signal_dict,
     strategy,
     _id,
@@ -22,7 +22,6 @@ def process_strategy(
 
         units, cash, value = _initialize_variables(
             data,
-            trade_units,
             start_stock,
             initial_portfolio_value,
         )
@@ -48,8 +47,8 @@ def process_strategy(
     }
 
 
-def _initialize_variables(data, trade_units, start_stock, initial_portfolio_value):
-    units = [trade_units * start_stock]
+def _initialize_variables(data, start_stock, initial_portfolio_value):
+    units = [start_stock]
     cash = [initial_portfolio_value - units[0] * data.Close.iloc[0]]
     value = [units[0] * data.Close.iloc[0] + cash[0]]
 

@@ -13,13 +13,13 @@ for i in _id:
     _dependencies.append(BLD / "python" / "data" / i)
 
 
-for signal_generator in STRATEGIES:
+for strategy in STRATEGIES:
 
-    @pytask.task(id=signal_generator)
+    @pytask.task(id=strategy)
     def task_signal_list(
-        signal_generator=signal_generator,
+        signal_generator=strategy,
         depends_on=_dependencies,
-        produces=BLD / "python" / "analysis" / f"{signal_generator}.pkl",
+        produces=BLD / "python" / "analysis" / f"{strategy}.pkl",
     ):
         strategy_dict = {}
         for i in range(len(_id)):
