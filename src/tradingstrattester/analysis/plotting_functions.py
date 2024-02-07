@@ -3,9 +3,6 @@
 
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from tradingstrattester.config import ASSETS, FREQUENCIES
-
-_id = [f"{frequency}_{asset}.pkl" for frequency in FREQUENCIES for asset in ASSETS]
 
 
 def plot_asset_strategy(depot_out, df):
