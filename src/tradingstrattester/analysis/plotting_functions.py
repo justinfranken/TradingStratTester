@@ -1,29 +1,41 @@
 """Functions for indicating when to buy or sell."""
 
 import math
+import pickle
 
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from tradingstrattester.config import STRATEGIES
+
+6
 
 
-def plot_asset_strategy(depot_out, df):
+def plot_asset_strategy(data, id, depends_on):
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-    # Add traces
-    fig.add_scatter(
-        x=df.index,
-        y=depot_out,
-        mode="lines",
-        secondary_y=False,
-    )
+    # Add strategy traces
+    depot_out = {}
+    indicator = -1
+    for strategy in STRATEGIES:
+        indicator += 1
+        with open(depends_on[indicator], "rb") as file:
+            depot_out[strategy] = pickle.load(file)
 
+        fig.add_scatter(
+            x=data.index,
+            y=depot_out[strategy]["value_dict"][id.split(".")[0]],
+            mode="lines",
+            secondary_y=False,
+        )
+
+    # Add asset candle sticks
     fig.add_trace(
         go.Candlestick(
-            x=df.index,
-            open=df.Open,
-            high=df.High,
-            low=df.Low,
-            close=df.Close,
+            x=data.index,
+            open=data.Open,
+            high=data.High,
+            low=data.Low,
+            close=data.Close,
         ),
         secondary_y=True,
     )
@@ -44,16 +56,17 @@ def plot_asset_strategy(depot_out, df):
     return fig
 
 
-def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
+def plot_indicators(data, id, initial_depot_cash, depends_on):
     fig = go.Figure()
 
-    start_units = math.floor(initial_depot_cash / data[asset].Close[1])
-    rest_cash = initial_depot_cash - start_units * data[asset].Close[1]
+    start_units = math.floor(initial_depot_cash / data.Close[1])
+    rest_cash = initial_depot_cash - start_units * data.Close[1]
 
+    # Add indicator for no strategy
     fig.add_trace(
         go.Indicator(
             mode="number+gauge+delta",
-            value=start_units * data[asset].Close[-1] + rest_cash,
+            value=start_units * data.Close[-1] + rest_cash,
             delta={"reference": initial_depot_cash},
             domain={"x": [0.20, 1], "y": _generate_intervals(len(STRATEGIES) + 1)[0]},
             title={"text": "No strategy"},
@@ -61,14 +74,8 @@ def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
                 "shape": "bullet",
                 "axis": {
                     "range": [
-                        (
-                            math.ceil(min(data[asset].Close) * start_units + rest_cash)
-                            * 0.95
-                        ),
-                        (
-                            math.ceil(max(data[asset].Close) * start_units + rest_cash)
-                            * 1.05
-                        ),
+                        (math.ceil(min(data.Close) * start_units + rest_cash) * 0.95),
+                        (math.ceil(max(data.Close) * start_units + rest_cash) * 1.05),
                     ],
                 },
                 "threshold": {
@@ -79,7 +86,7 @@ def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
                 "steps": [
                     {
                         "range": [
-                            min(data[asset].Close) * start_units + rest_cash,
+                            min(data.Close) * start_units + rest_cash,
                             initial_depot_cash,
                         ],
                         "color": "lightsalmon",
@@ -87,7 +94,7 @@ def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
                     {
                         "range": [
                             initial_depot_cash,
-                            max(data[asset].Close) * start_units + rest_cash,
+                            max(data.Close) * start_units + rest_cash,
                         ],
                         "color": "lightgreen",
                     },
@@ -97,34 +104,37 @@ def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
         ),
     )
 
-    for index, strategies in enumerate(STRATEGIES, start=1):
+    # Add indicators for each strategy
+    depot_out = {}
+    indicator = -1
+    for index, strategy in enumerate(STRATEGIES, start=1):
+        indicator += 1
+        with open(depends_on[indicator], "rb") as file:
+            depot_out[strategy] = pickle.load(file)
+
         fig.add_trace(
             go.Indicator(
                 mode="number+gauge+delta",
-                value=strategy_dict[strategies]["value_dict"][asset.split(".")[0]][-1],
+                value=depot_out[strategy]["value_dict"][id.split(".")[0]][-1],
                 delta={"reference": initial_depot_cash},
                 domain={
                     "x": [0.20, 1],
                     "y": _generate_intervals(len(STRATEGIES) + 1)[index],
                 },
-                title={"text": strategies},
+                title={"text": strategy},
                 gauge={
                     "shape": "bullet",
                     "axis": {
                         "range": [
                             math.ceil(
                                 min(
-                                    strategy_dict[strategies]["value_dict"][
-                                        asset.split(".")[0]
-                                    ],
+                                    depot_out[strategy]["value_dict"][id.split(".")[0]],
                                 )
                                 * 0.95,
                             ),
                             math.ceil(
                                 max(
-                                    strategy_dict[strategies]["value_dict"][
-                                        asset.split(".")[0]
-                                    ],
+                                    depot_out[strategy]["value_dict"][id.split(".")[0]],
                                 )
                                 * 1.05,
                             ),
@@ -139,9 +149,7 @@ def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
                         {
                             "range": [
                                 min(
-                                    strategy_dict[strategies]["value_dict"][
-                                        asset.split(".")[0]
-                                    ],
+                                    depot_out[strategy]["value_dict"][id.split(".")[0]],
                                 ),
                                 initial_depot_cash,
                             ],
@@ -151,9 +159,7 @@ def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
                             "range": [
                                 initial_depot_cash,
                                 max(
-                                    strategy_dict[strategies]["value_dict"][
-                                        asset.split(".")[0]
-                                    ],
+                                    depot_out[strategy]["value_dict"][id.split(".")[0]],
                                 ),
                             ],
                             "color": "lightgreen",
