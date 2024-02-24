@@ -7,8 +7,6 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from tradingstrattester.config import STRATEGIES
 
-6
-
 
 def plot_asset_strategy(data, id, depends_on):
     fig = make_subplots(specs=[[{"secondary_y": True}]])
