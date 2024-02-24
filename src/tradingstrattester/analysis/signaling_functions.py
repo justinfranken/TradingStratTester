@@ -1,4 +1,5 @@
 """Functions for indicating when to buy or sell."""
+import numpy as np
 
 
 def signal_list(data, generator):
@@ -16,7 +17,11 @@ def signal_list(data, generator):
     signal = []
     signal.append(0)
 
-    if generator == "_simple_signal_generator":
+    if generator == "_random_signal_gen":
+        for i in range(1, len(data)):
+            signal.append(_random_signal_gen())
+
+    if generator == "_simple_signal_gen":
         for i in range(1, len(data)):
             df = data[i - 1 : i + 1]
             signal.append(_simple_signal_generator(df))
@@ -25,6 +30,26 @@ def signal_list(data, generator):
 
 
 # Signal generator functions
+def _random_signal_gen(prob_zero=0.7, prob_one=0.15, prob_two=0.15):
+    """Generates a random signal with specified probabilities using a random number
+    generator.
+
+    Parameters:
+    - prob_zero (float): Probability of generating 0.
+    - prob_one (float): Probability of generating 1.
+    - prob_two (float): Probability of generating 2.
+
+    Returns:
+    - int: An integer representing the randomly generated signal:
+           - 1 for a bearish pattern, i.e. sell
+           - 2 for a bullish pattern, i.e. buy
+           - 0 for no clear pattern, i.e. do nothing
+
+    """
+    rng = np.random.default_rng()
+    return rng.choice([0, 1, 2], p=[prob_zero, prob_one, prob_two])
+
+
 def _simple_signal_generator(data):
     """Generates a signal based on the provided data using a simple signal generation
     algorithm.

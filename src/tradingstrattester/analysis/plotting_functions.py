@@ -47,14 +47,13 @@ def plot_asset_strategy(depot_out, df):
 def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
     fig = go.Figure()
 
-    start_units = math.floor(initial_depot_cash / data[f"{asset}.pkl"].Close[1])
-    rest_cash = initial_depot_cash - start_units * data[f"{asset}.pkl"].Close[1]
+    start_units = math.floor(initial_depot_cash / data[asset].Close[1])
+    rest_cash = initial_depot_cash - start_units * data[asset].Close[1]
 
-    # Indicator bar indicating no strategy at all
     fig.add_trace(
         go.Indicator(
             mode="number+gauge+delta",
-            value=start_units * data[f"{asset}.pkl"].Close[-1] + rest_cash,
+            value=start_units * data[asset].Close[-1] + rest_cash,
             delta={"reference": initial_depot_cash},
             domain={"x": [0.20, 1], "y": _generate_intervals(len(STRATEGIES) + 1)[0]},
             title={"text": "No strategy"},
@@ -63,17 +62,11 @@ def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
                 "axis": {
                     "range": [
                         (
-                            math.ceil(
-                                min(data[f"{asset}.pkl"].Close) * start_units
-                                + rest_cash,
-                            )
+                            math.ceil(min(data[asset].Close) * start_units + rest_cash)
                             * 0.95
                         ),
                         (
-                            math.ceil(
-                                max(data[f"{asset}.pkl"].Close) * start_units
-                                + rest_cash,
-                            )
+                            math.ceil(max(data[asset].Close) * start_units + rest_cash)
                             * 1.05
                         ),
                     ],
@@ -86,7 +79,7 @@ def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
                 "steps": [
                     {
                         "range": [
-                            min(data[f"{asset}.pkl"].Close) * start_units + rest_cash,
+                            min(data[asset].Close) * start_units + rest_cash,
                             initial_depot_cash,
                         ],
                         "color": "lightsalmon",
@@ -94,7 +87,7 @@ def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
                     {
                         "range": [
                             initial_depot_cash,
-                            max(data[f"{asset}.pkl"].Close) * start_units + rest_cash,
+                            max(data[asset].Close) * start_units + rest_cash,
                         ],
                         "color": "lightgreen",
                     },
@@ -104,12 +97,11 @@ def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
         ),
     )
 
-    # Indicator bars for each strategy for one asset at one frequency
     for index, strategies in enumerate(STRATEGIES, start=1):
         fig.add_trace(
             go.Indicator(
                 mode="number+gauge+delta",
-                value=strategy_dict[strategies]["value_dict"][asset][-1],
+                value=strategy_dict[strategies]["value_dict"][asset.split(".")[0]][-1],
                 delta={"reference": initial_depot_cash},
                 domain={
                     "x": [0.20, 1],
@@ -121,11 +113,19 @@ def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
                     "axis": {
                         "range": [
                             math.ceil(
-                                min(strategy_dict[strategies]["value_dict"][asset])
+                                min(
+                                    strategy_dict[strategies]["value_dict"][
+                                        asset.split(".")[0]
+                                    ],
+                                )
                                 * 0.95,
                             ),
                             math.ceil(
-                                max(strategy_dict[strategies]["value_dict"][asset])
+                                max(
+                                    strategy_dict[strategies]["value_dict"][
+                                        asset.split(".")[0]
+                                    ],
+                                )
                                 * 1.05,
                             ),
                         ],
@@ -138,7 +138,11 @@ def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
                     "steps": [
                         {
                             "range": [
-                                min(strategy_dict[strategies]["value_dict"][asset]),
+                                min(
+                                    strategy_dict[strategies]["value_dict"][
+                                        asset.split(".")[0]
+                                    ],
+                                ),
                                 initial_depot_cash,
                             ],
                             "color": "lightsalmon",
@@ -146,7 +150,11 @@ def plot_indicators(strategy_dict, data, asset, initial_depot_cash, STRATEGIES):
                         {
                             "range": [
                                 initial_depot_cash,
-                                max(strategy_dict[strategies]["value_dict"][asset]),
+                                max(
+                                    strategy_dict[strategies]["value_dict"][
+                                        asset.split(".")[0]
+                                    ],
+                                ),
                             ],
                             "color": "lightgreen",
                         },

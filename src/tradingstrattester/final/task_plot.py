@@ -16,7 +16,11 @@ for strategy in STRATEGIES:
         def task_plotting_assets_and_strats(
             id=id,
             depends_on=BLD / "python" / "analysis" / f"sim_depot{strategy}.pkl",
-            produces=BLD / "python" / "analysis" / "plots" / f"plot_{id}.html",
+            produces=BLD
+            / "python"
+            / "analysis"
+            / "plots"
+            / f"asset+strat_plot_{id.split('.')[0]}.html",
         ):
             # Preparing asset and strategy output data
             data = {}
