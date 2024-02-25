@@ -31,7 +31,7 @@ for id in _id:
         / f"asset_and_strat_plot_{id.split('.')[0]}.html",
     ):
         data = pd.read_pickle(BLD / "python" / "data" / id)
-        fig = plot_asset_strategy(data, id, depends_on)
+        fig = plot_asset_strategy(data, id, initial_depot_cash, depends_on)
         fig.write_html(produces)
 
     @pytask.task(id=id)

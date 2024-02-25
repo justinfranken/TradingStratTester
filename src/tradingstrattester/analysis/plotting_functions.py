@@ -8,7 +8,7 @@ from plotly.subplots import make_subplots
 from tradingstrattester.config import STRATEGIES
 
 
-def plot_asset_strategy(data, id, depends_on):
+def plot_asset_strategy(data, id, initial_depot_cash, depends_on):
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     # Add strategy traces
@@ -23,8 +23,22 @@ def plot_asset_strategy(data, id, depends_on):
             x=data.index,
             y=depot_out[strategy]["value_dict"][id.split(".")[0]],
             mode="lines",
-            secondary_y=False,
+            name=strategy,
+            line={"width": 1.5},
+            secondary_y=True,
         )
+
+    fig.add_hline(secondary_y=True, y=initial_depot_cash, line_dash="dot")
+
+    fig.add_annotation(
+        xref="paper",
+        yref="y2",
+        x=0.885,
+        y=initial_depot_cash,
+        text="Initial depot value",
+        ax=0,
+        ay=10,
+    )
 
     # Add asset candle sticks
     fig.add_trace(
@@ -34,22 +48,23 @@ def plot_asset_strategy(data, id, depends_on):
             high=data.High,
             low=data.Low,
             close=data.Close,
+            name=f"{id.split('.')[0].split('_')[1]} price",
         ),
-        secondary_y=True,
+        secondary_y=False,
     )
 
     # Add figure title
     fig.update_layout(
-        title_text="Double Y Axis Example",
+        title_text=f"<b>{id.split('.')[0]} asset price and depot value for different strategies<b>",
         xaxis_rangeslider_visible=False,
     )
 
     # Set x-axis title
-    fig.update_xaxes(title_text="xaxis title")
+    fig.update_xaxes(title_text="Dates")
 
     # Set y-axes titles
-    fig.update_yaxes(title_text="<b>primary</b> yaxis title", secondary_y=False)
-    fig.update_yaxes(title_text="<b>secondary</b> yaxis title", secondary_y=True)
+    fig.update_yaxes(title_text="<b>Depot value</b>", secondary_y=True)
+    fig.update_yaxes(title_text="<b>Asset price</b>", secondary_y=False)
 
     return fig
 
