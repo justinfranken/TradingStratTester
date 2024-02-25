@@ -184,7 +184,7 @@ def plot_indicators(data, id, initial_depot_cash, depends_on):
         )
 
     fig.update_layout(
-        title_text=f"<b>Comparing of {id.split('.')[0]} Strategy Indicator Bars and Immediate Investment Approach (No strategy)<b>",
+        title_text=f"<b>Comparison of {id.split('.')[0]} Strategy Indicator Bars and Immediately Investing Approach (No strategy)<b>",
         xaxis_rangeslider_visible=False,
     )
 
