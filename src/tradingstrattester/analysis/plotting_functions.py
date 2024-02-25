@@ -55,7 +55,7 @@ def plot_asset_strategy(data, id, initial_depot_cash, depends_on):
 
     # Add figure title
     fig.update_layout(
-        title_text=f"<b>{id.split('.')[0]} asset price and depot value for different strategies<b>",
+        title_text=f"<b>{id.split('.')[0]} Asset Price and Depot Value for Different Strategies<b>",
         xaxis_rangeslider_visible=False,
     )
 
@@ -81,7 +81,7 @@ def plot_indicators(data, id, initial_depot_cash, depends_on):
             mode="number+gauge+delta",
             value=start_units * data.Close[-1] + rest_cash,
             delta={"reference": initial_depot_cash},
-            domain={"x": [0.20, 1], "y": _generate_intervals(len(STRATEGIES) + 1)[0]},
+            domain={"x": [0.15, 1], "y": _generate_intervals(len(STRATEGIES) + 1)[0]},
             title={"text": "No strategy"},
             gauge={
                 "shape": "bullet",
@@ -131,7 +131,7 @@ def plot_indicators(data, id, initial_depot_cash, depends_on):
                 value=depot_out[strategy]["value_dict"][id.split(".")[0]][-1],
                 delta={"reference": initial_depot_cash},
                 domain={
-                    "x": [0.20, 1],
+                    "x": [0.15, 1],
                     "y": _generate_intervals(len(STRATEGIES) + 1)[index],
                 },
                 title={"text": strategy},
@@ -182,6 +182,11 @@ def plot_indicators(data, id, initial_depot_cash, depends_on):
                 },
             ),
         )
+
+    fig.update_layout(
+        title_text=f"<b>Comparing of {id.split('.')[0]} Strategy Indicator Bars and Immediate Investment Approach (No strategy)<b>",
+        xaxis_rangeslider_visible=False,
+    )
 
     return fig
 
