@@ -14,6 +14,7 @@ for strategy in STRATEGIES:
         depends_on=BLD / "python" / "analysis" / f"{strategy}.pkl",
         produces=BLD / "python" / "analysis" / f"sim_depot{strategy}.pkl",
     ):
+        """Create the simulated depot for each strategy."""
         _id = [
             f"{frequency}_{asset}.pkl" for frequency in FREQUENCIES for asset in ASSETS
         ]
