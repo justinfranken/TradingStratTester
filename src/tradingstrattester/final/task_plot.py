@@ -30,6 +30,7 @@ for id in _id:
         / "plots"
         / f"asset_and_strat_plot_{id.split('.')[0]}.html",
     ):
+        """Create plot of asset candles and strategy depot values."""
         data = pd.read_pickle(BLD / "python" / "data" / id)
         fig = plot_asset_strategy(data, id, initial_depot_cash, depends_on)
         fig.write_html(produces)
@@ -44,6 +45,7 @@ for id in _id:
         / "plots"
         / f"indicator-bar_plot_{id.split('.')[0]}.html",
     ):
+        """Create indicator bar plots for each asset at each frequency."""
         data = pd.read_pickle(BLD / "python" / "data" / id)
         fig = plot_indicators(data, id, initial_depot_cash, depends_on)
         fig.write_html(produces)

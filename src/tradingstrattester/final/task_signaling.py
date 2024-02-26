@@ -21,6 +21,7 @@ for strategy in STRATEGIES:
         depends_on=_dependencies,
         produces=BLD / "python" / "analysis" / f"{strategy}.pkl",
     ):
+        """Create a dictionary of signal lists for each strategy."""
         strategy_dict = {}
         for i in range(len(_id)):
             name = f"signal_{_id[i]}"
