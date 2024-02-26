@@ -13,7 +13,7 @@ def plot_asset_strategy(data, id, initial_depot_cash, depends_on):
     candlesticks.
 
     Parameters:
-        data (DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
+        data (pd.DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
         id (str): The identifier for the asset including the ending "[...].pkl", e.g. "60m_DB.pkl".
         initial_depot_cash (float): The initial depot cash value defined in the config.py file.
         depends_on (list): A list of file paths to the simulated depots for each strategy.
@@ -38,7 +38,7 @@ def _add_strategy_traces(fig, data, id, depends_on):
 
     Parameters:
         fig (go.Figure): The Plotly figure object.
-        data (DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
+        data (pd.DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
         id (str): The identifier for the asset including the ending "[...].pkl", e.g. "60m_DB.pkl".
         depends_on (list): A list of file paths to the simulated depots for each strategy.
 
@@ -86,7 +86,7 @@ def _add_asset_candlesticks(fig, data, id):
 
     Parameters:
         fig (go.Figure): The Plotly figure object.
-        data (DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
+        data (pd.DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
         id (str): The identifier for the asset including the ending "[...].pkl", e.g. "60m_DB.pkl".
 
     """
@@ -126,7 +126,7 @@ def plot_indicators(data, id, initial_depot_cash, depends_on):
     cash at the beginning of the investing period).
 
     Parameters:
-        data (DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
+        data (pd.DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
         id (str): The identifier for the asset including the ending "[...].pkl", e.g. "60m_DB.pkl".
         initial_depot_cash (float): The initial depot cash value defined in the config.py file.
         depends_on (list): A list of file paths to the simulated depots for each strategy.
@@ -163,7 +163,7 @@ def _add_no_strategy_indicator(fig, data, start_units, rest_cash, initial_depot_
 
     Parameters:
         fig (go.Figure): The Plotly figure object.
-        data (DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
+        data (pd.DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
         start_units (int): The number of units purchased at the start of the investing period.
         rest_cash (float): The remaining cash after purchasing units at the beginning of the investing period.
         initial_depot_cash (float): The initial depot cash value defined in the config.py file.

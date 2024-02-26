@@ -3,15 +3,15 @@ import numpy as np
 
 
 def signal_list(data, generator):
-    """Generates a signal list based on the input data using a specified signal
-    generator.
+    """Generates a signal list based on the asset data from data_download() using a
+    specified signal generator.
 
     Parameters:
     - data (pandas.DataFrame): A DataFrame containing the financial data from data_download().
     - generator (str): The name of the signal generator function to use.
 
     Returns:
-    - list: A list of signals generated based on the specified signal generator.
+    - list: A list of signals generated (either 0,1, or 2) based on the specified signal generator.
 
     """
     signal = []
