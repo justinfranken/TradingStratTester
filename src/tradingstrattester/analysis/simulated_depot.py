@@ -1,7 +1,9 @@
 """Function for simulating a depot to test strategies."""
 
+import math
+
 import pandas as pd
-from tradingstrattester.config import BLD, initial_depot_cash
+from tradingstrattester.config import BLD, initial_depot_cash, start_stock_prct
 
 
 def simulated_depot(
@@ -9,8 +11,6 @@ def simulated_depot(
     strategy,
     _id,
     trade_units=100,
-    start_stock=10,
-    initial_portfolio_value=initial_depot_cash,
 ):
     """Simulates a trading strategy on multiple assets specified in ASSETS from the
     config.py file.
@@ -21,7 +21,7 @@ def simulated_depot(
         _id (list): A list of asset IDs specified in the config.py file.
         trade_units (int, optional): The number of units to trade per transaction. Default is 100.
         start_stock (int, optional): The initial number of stocks to start trading with. Default is 10.
-        initial_portfolio_value (int, optional): The initial value of the portfolio. Default is 10,000.
+        initial_depot_cash (int, optional): The initial value of the portfolio. Default is 10,000.
 
     Returns:
         dict: A dictionary containing cash, units, and portfolio value balances for each asset specified in ASSET from the config.py file.
@@ -37,8 +37,7 @@ def simulated_depot(
 
         units, cash, value = _initialize_variables(
             data,
-            start_stock,
-            initial_portfolio_value,
+            initial_depot_cash,
         )
 
         for i in range(1, len(signal)):
@@ -62,20 +61,19 @@ def simulated_depot(
     }
 
 
-def _initialize_variables(data, start_stock, initial_portfolio_value):
+def _initialize_variables(data, initial_depot_cash):
     """Initializes variables for simulating the trading depot.
 
     Args:
         data (pd.DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
-        start_stock (int): The initial number of stocks to start trading with.
         initial_depot_cash (float): The initial depot cash value defined in the config.py file.
 
     Returns:
         tuple: A tuple containing lists of units, cash, and portfolio value.
 
     """
-    units = [start_stock]
-    cash = [initial_portfolio_value - units[0] * data.Close.iloc[0]]
+    units = [math.floor((initial_depot_cash * start_stock_prct) / data.Close.iloc[0])]
+    cash = [initial_depot_cash - units[0] * data.Close.iloc[0]]
     value = [units[0] * data.Close.iloc[0] + cash[0]]
 
     return units, cash, value

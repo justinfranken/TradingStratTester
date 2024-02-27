@@ -9,11 +9,21 @@ PAPER_DIR = SRC.joinpath("..", "..", "paper").resolve()
 
 FREQUENCIES = ["2m", "60m", "1d"]
 ASSETS = ["MSFT", "DB", "EURUSD=X", "GC=F", "^TNX"]
-STRATEGIES = ["_simple_signal_gen", "_random_signal_gen"]
 _id = [f"{frequency}_{asset}.pkl" for frequency in FREQUENCIES for asset in ASSETS]
 
 # Simulating depot configurations
+STRATEGIES = ["_simple_signal_gen", "_random_signal_gen"]
 initial_depot_cash = 10000
+start_stock_prct = 0.25
 
 
-__all__ = ["BLD", "SRC", "TEST_DIR", "ASSETS", "FREQUENCIES", "MAX_DAYS"]
+__all__ = [
+    "BLD",
+    "SRC",
+    "TEST_DIR",
+    "ASSETS",
+    "FREQUENCIES",
+    "initial_depot_cash",
+    "_id",
+    "start_stock_prct",
+]
