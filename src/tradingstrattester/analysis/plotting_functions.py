@@ -142,15 +142,7 @@ def plot_indicators(data, id, initial_depot_cash, depends_on):
 
     _add_no_strategy_indicator(fig, data, start_units, rest_cash, initial_depot_cash)
 
-    _add_strategy_indicators(
-        fig,
-        data,
-        id,
-        depends_on,
-        start_units,
-        rest_cash,
-        initial_depot_cash,
-    )
+    _add_strategy_indicators(fig, id, depends_on, initial_depot_cash)
 
     _add_figure_layout_indicator(fig, id)
 
