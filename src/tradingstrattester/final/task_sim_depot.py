@@ -4,7 +4,7 @@ import pickle
 
 import pytask
 from tradingstrattester.analysis.simulated_depot import simulated_depot
-from tradingstrattester.config import ASSETS, BLD, FREQUENCIES, STRATEGIES
+from tradingstrattester.config import BLD, STRATEGIES, _id
 
 for strategy in STRATEGIES:
 
@@ -15,10 +15,6 @@ for strategy in STRATEGIES:
         produces=BLD / "python" / "analysis" / f"sim_depot{strategy}.pkl",
     ):
         """Create the simulated depot for each strategy."""
-        _id = [
-            f"{frequency}_{asset}.pkl" for frequency in FREQUENCIES for asset in ASSETS
-        ]
-
         signal_dict = {}
         with open(depends_on, "rb") as file:
             signal_dict[strategy] = pickle.load(file)

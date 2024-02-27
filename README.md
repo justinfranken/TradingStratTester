@@ -87,9 +87,6 @@ FREQUENCIES = ["2m", "60m", "1d"]
 MAX_DAYS = [59, 729, 10**1000]
 ```
 
-> [!CAUTION]
-> In order to have a correctly working project you have to add the maximum possible history in the same order in **MAX_DAYS** as you have included frequencies in **FREQUENCIES** and also subtract one day from that history as you can see in the table above.
-
 ## Pictures / Analysis results ?!
 
 Maybe some pictures or fancy analysis results later on ...
@@ -120,6 +117,9 @@ The project which will then be generated is structured as follows:
 - **src**: The source directory contains all of our python files for our analysis.
 - **test**: The test directory contains all of our python files to test the functions
   used for our analysis.
+
+> [!CAUTION]
+> "To ensure the proper functionality of this project, it is necessary to have an **internet connection**. This allows the project template structure to download financial data directly from [Yahoo Finance](https://de.finance.yahoo.com/). Please note that no pre-downloaded financial data will be available on this GitHub page."
 
 ## Credits
 

@@ -1,7 +1,7 @@
 """Function for simulating a depot to test strategies."""
 
 import pandas as pd
-from tradingstrattester.config import BLD
+from tradingstrattester.config import BLD, initial_depot_cash
 
 
 def simulated_depot(
@@ -10,7 +10,7 @@ def simulated_depot(
     _id,
     trade_units=100,
     start_stock=10,
-    initial_portfolio_value=10_000,
+    initial_portfolio_value=initial_depot_cash,
 ):
     """Simulates a trading strategy on multiple assets specified in ASSETS from the
     config.py file.

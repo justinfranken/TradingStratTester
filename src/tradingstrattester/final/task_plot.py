@@ -7,11 +7,7 @@ from tradingstrattester.analysis.plotting_functions import (
     plot_asset_strategy,
     plot_indicators,
 )
-from tradingstrattester.config import ASSETS, BLD, FREQUENCIES, STRATEGIES
-
-initial_depot_cash = 10000
-_id = [f"{frequency}_{asset}.pkl" for frequency in FREQUENCIES for asset in ASSETS]
-
+from tradingstrattester.config import BLD, STRATEGIES, _id, initial_depot_cash
 
 _dependencies = []
 for strategy in STRATEGIES:

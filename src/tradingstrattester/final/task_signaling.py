@@ -5,9 +5,8 @@ import pickle
 import pandas as pd
 import pytask
 from tradingstrattester.analysis.signaling_functions import signal_list
-from tradingstrattester.config import ASSETS, BLD, FREQUENCIES, STRATEGIES
+from tradingstrattester.config import BLD, STRATEGIES, _id
 
-_id = [f"{frequency}_{asset}.pkl" for frequency in FREQUENCIES for asset in ASSETS]
 _dependencies = []
 for i in _id:
     _dependencies.append(BLD / "python" / "data" / i)
