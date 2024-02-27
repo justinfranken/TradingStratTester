@@ -16,7 +16,7 @@ for strategy in STRATEGIES:
 
 for id in _id:
 
-    @pytask.task(id=id)
+    @pytask.task(id=id.split(".")[0])
     def task_plot_asset_and_strats(
         id=id,
         depends_on=_dependencies,
@@ -31,7 +31,7 @@ for id in _id:
         fig = plot_asset_strategy(data, id, initial_depot_cash, depends_on)
         fig.write_html(produces)
 
-    @pytask.task(id=id)
+    @pytask.task(id=id.split(".")[0])
     def task_plot_indicators(
         id=id,
         depends_on=_dependencies,
