@@ -1,4 +1,4 @@
-"""Functions for indicating when to buy or sell."""
+"""Functions for indicating when to buy, sell or do nothing."""
 import numpy as np
 
 
