@@ -95,8 +95,23 @@ def _handle_errors_data_download(start_date, end_date, frequency):
             msg,
         )
 
-    if frequency not in FREQUENCIES:
-        msg = f"Invalid frequency: {frequency}. Supported frequencies are {FREQUENCIES}"
+    og_frequencies = [
+        "1m",
+        "2m",
+        "5m",
+        "15m",
+        "30m",
+        "60m",
+        "90m",
+        "1d",
+        "5d",
+        "1wk",
+        "1mo",
+        "3mo",
+    ]
+
+    if frequency not in og_frequencies:
+        msg = f"Invalid frequency: {frequency}. Supported frequencies are {og_frequencies}"
         raise ValueError(
             msg,
         )

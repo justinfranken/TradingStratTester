@@ -23,11 +23,23 @@ def simulated_depot(
     - signal_dict (dict): A dictionary containing trading signals of the chosen strategy for each asset.
     - strategy (str): The name of the trading strategy to be used.
     - _id (list): A list of asset IDs specified in the config.py file.
+    - initial_depot_cash (float): The initial depot cash value defined in the config.py file.
+    - start_stock_prct (float): The percentage indicating the portion of the initial depot value to be invested in stocks.
+    - unit_strat (str): Strategy for determining trade units. Supported strategies: 'fixed_trade_units',
+                        'percentage_to_value_trades', 'volatility_unit_trades'.
+    - unit_var (float): Variable used in the unit strategy calculation.
 
     Returns:
     - dict: A dictionary containing cash, units, and portfolio value balances for each asset specified in ASSET from the config.py file.
 
     """
+    _handle_errors_in_sim_depot_config_vars(
+        initial_depot_cash,
+        start_stock_prct,
+        unit_strat,
+        unit_var,
+    )
+
     cash_dict = {}
     unit_dict = {}
     value_dict = {}
@@ -69,6 +81,7 @@ def _initialize_variables(data, initial_depot_cash, start_stock_prct):
     Args:
     - data (pd.DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
     - initial_depot_cash (float): The initial depot cash value defined in the config.py file.
+    - start_stock_prct (float): The percentage indicating the portion of the initial depot value to be invested in stocks.
 
     Returns:
     - tuple: A tuple containing lists of units, cash, and portfolio value.
@@ -205,3 +218,54 @@ def __volatility_unit_trades(i, data, value, unit_var):
     unit = math.floor((value[i - 1] * unit_var) / data.Close.iloc[i])
 
     return unit if i <= 50 else math.floor(np.std(data.Close.iloc[i - 50 : i]) * unit)
+
+
+def _handle_errors_in_sim_depot_config_vars(
+    initial_depot_cash,
+    start_stock_prct,
+    unit_strat,
+    unit_var,
+):
+    """Handle type and value errors for sim depot input variables from config.py.
+
+    Raises:
+    - TypeError: Raises TypeErrors in case inputs have not the right type.
+    - ValueError: Raises ValueErrors in case that inputs aren't in the correct format.
+
+    """
+    # initial_depot_cash
+    if not isinstance(initial_depot_cash, int | float):
+        msg = f"'initial_depot_cash' has the wrong type ({type(initial_depot_cash)}). '{initial_depot_cash}' has to be of type int or float."
+        raise TypeError(msg)
+    if initial_depot_cash <= 0:
+        msg = f"Wrong input for 'initial_depot_cash' ({initial_depot_cash}). Input has to be greater than 0."
+        raise ValueError(msg)
+
+    # start_stock_prct
+    if not isinstance(start_stock_prct, int | float):
+        msg = f"'start_stock_prct' has the wrong type ({type(start_stock_prct)}). '{start_stock_prct}' has to be of type int or float."
+        raise TypeError(msg)
+    if start_stock_prct <= 0 or start_stock_prct > 1:
+        msg = f"'start_stock_prct' has to be greater 0 and smaller or equal than 1, and not {start_stock_prct}."
+        raise ValueError(msg)
+
+    # unit_strat
+    if not isinstance(unit_strat, str):
+        msg = f"'unit_strat' has the wrong type ({type(unit_strat)}). '{unit_strat}' has to be of type str."
+        raise TypeError(msg)
+    og_unit_strats = [
+        "fixed_trade_units",
+        "percentage_to_value_trades",
+        "volatility_unit_trades",
+    ]
+    if unit_strat not in og_unit_strats:
+        msg = f"Input for 'unit_strat' ({unit_strat}) is not in {og_unit_strats}."
+        raise ValueError(msg)
+
+    # unit_var
+    if not isinstance(unit_var, int | float):
+        msg = f"'unit_var' has the wrong type ({type(unit_var)}). '{unit_var}' has to be of type int or float."
+        raise TypeError(msg)
+    if unit_var <= 0 or unit_var > 1:
+        msg = f"'unit_var' has to be greater 0 and smaller or equal than 1, and not {unit_var}."
+        raise ValueError(msg)
