@@ -18,12 +18,12 @@ def simulated_depot(signal_dict, strategy, _id):
     config.py file.
 
     Args:
-        signal_dict (dict): A dictionary containing trading signals of the chosen strategy for each asset.
-        strategy (str): The name of the trading strategy to be used.
-        _id (list): A list of asset IDs specified in the config.py file.
+    - signal_dict (dict): A dictionary containing trading signals of the chosen strategy for each asset.
+    - strategy (str): The name of the trading strategy to be used.
+    - _id (list): A list of asset IDs specified in the config.py file.
 
     Returns:
-        dict: A dictionary containing cash, units, and portfolio value balances for each asset specified in ASSET from the config.py file.
+    - dict: A dictionary containing cash, units, and portfolio value balances for each asset specified in ASSET from the config.py file.
 
     """
     cash_dict = {}
@@ -64,11 +64,11 @@ def _initialize_variables(data, initial_depot_cash):
     """Initializes variables for simulating the trading depot.
 
     Args:
-        data (pd.DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
-        initial_depot_cash (float): The initial depot cash value defined in the config.py file.
+    - data (pd.DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
+    - initial_depot_cash (float): The initial depot cash value defined in the config.py file.
 
     Returns:
-        tuple: A tuple containing lists of units, cash, and portfolio value.
+    - tuple: A tuple containing lists of units, cash, and portfolio value.
 
     """
     units = [math.floor((initial_depot_cash * start_stock_prct) / data.Close.iloc[0])]
@@ -82,14 +82,14 @@ def _execute_sell_signal(i, value, cash, units, data, unit_strat, unit_var):
     """Executes sell signal for a given time step.
 
     Args:
-        i (int): Index of the current time step.
-        value (list): List or array containing the value of the trading account at each time step.
-        cash (list): List containing cash values for each time step.
-        data (pd.DataFrame): DataFrame containing asset data.
-        units (list): List containing unit holdings for each time step.
-        unit_strat (str): Strategy for determining trade units. Supported strategies: 'fixed_trade_units',
+    - i (int): Index of the current time step.
+    - value (list): List or array containing the value of the trading account at each time step.
+    - cash (list): List containing cash values for each time step.
+    - data (pd.DataFrame): DataFrame containing asset data.
+    - units (list): List containing unit holdings for each time step.
+    - unit_strat (str): Strategy for determining trade units. Supported strategies: 'fixed_trade_units',
                         'percentage_to_value_trades', 'volatility_unit_trades'.
-        unit_var (float): Variable used in the unit strategy calculation.
+    - unit_var (float): Variable used in the unit strategy calculation.
 
     """
     trade_units = _trade_units(i, data, value, unit_strat, unit_var)
@@ -105,14 +105,14 @@ def _execute_buy_signal(i, value, cash, units, data, unit_strat, unit_var):
     """Executes buy signal for a given time step.
 
     Args:
-        i (int): Index of the current time step.
-        value (list): List or array containing the value of the trading account at each time step.
-        cash (list): List containing cash values for each time step.
-        units (list): List containing unit holdings for each time step.
-        data (pd.DataFrame): DataFrame containing asset data.
-        unit_strat (str): Strategy for determining trade units. Supported strategies: 'fixed_trade_units',
+    - i (int): Index of the current time step.
+    - value (list): List or array containing the value of the trading account at each time step.
+    - cash (list): List containing cash values for each time step.
+    - units (list): List containing unit holdings for each time step.
+    - data (pd.DataFrame): DataFrame containing asset data.
+    - unit_strat (str): Strategy for determining trade units. Supported strategies: 'fixed_trade_units',
                         'percentage_to_value_trades', 'volatility_unit_trades'.
-        unit_var (float): Variable used in the unit strategy calculation.
+    - unit_var (float): Variable used in the unit strategy calculation.
 
     """
     trade_units = _trade_units(i, data, value, unit_strat, unit_var)
@@ -129,9 +129,9 @@ def _execute_no_signal(i, cash, units):
     """Executes no signal action for a given time step.
 
     Args:
-        i (int): Index of the current time step.
-        cash (list): List containing cash values for each time step.
-        units (list): List containing unit holdings for each time step.
+    - i (int): Index of the current time step.
+    - cash (list): List containing cash values for each time step.
+    - units (list): List containing unit holdings for each time step.
 
     """
     cash.append(cash[i - 1])
@@ -145,15 +145,15 @@ def _trade_units(i, data, value, unit_strat, unit_var):
     """Determine the number of units to trade based on the specified unit strategy.
 
     Args:
-        i (int): Index indicating the current time step.
-        data (pandas.DataFrame): DataFrame containing the data, with a 'Close' column representing closing prices.
-        value (list): List or array containing the value of the trading account at each time step.
-        unit_strat (str): Strategy for determining trade units. Supported strategies: 'fixed_trade_units',
+    - i (int): Index indicating the current time step.
+    - data (pandas.DataFrame): DataFrame containing the data, with a 'Close' column representing closing prices.
+    - value (list): List or array containing the value of the trading account at each time step.
+    - unit_strat (str): Strategy for determining trade units. Supported strategies: 'fixed_trade_units',
                         'percentage_to_value_trades', 'volatility_unit_trades'.
-        unit_var (float): Variable used in the unit strategy calculation.
+    - unit_var (float): Variable used in the unit strategy calculation.
 
     Returns:
-        out (int): Number of units to trade based on the specified strategy.
+    - out (int): Number of units to trade based on the specified strategy.
 
     """
     if unit_strat == "fixed_trade_units":

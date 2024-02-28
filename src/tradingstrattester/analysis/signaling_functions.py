@@ -14,6 +14,7 @@ def signal_list(data, generator):
     - list: A list of signals generated (either 0,1, or 2) based on the specified signal generator.
 
     """
+    _handle_errors_signal_list(data, generator)
     signal = []
     signal.append(0)
 
@@ -46,6 +47,7 @@ def _random_signal_gen(prob_zero=0.7, prob_one=0.15, prob_two=0.15):
            - 0 for no clear pattern, i.e. do nothing
 
     """
+    _handle_errors_random_signal_gen(prob_zero, prob_one, prob_two)
     rng = np.random.default_rng()
     return rng.choice([0, 1, 2], p=[prob_zero, prob_one, prob_two])
 
@@ -90,3 +92,50 @@ def _simple_signal_generator(data):
     # No clear pattern
     else:
         return 0
+
+
+def _handle_errors_signal_list(data, generator):
+    """Handle type and value errors for signal_list.
+
+    Raises:
+    - ValueError: If data has wrong columns or is empty. If generator is not defined.
+    - TypeError: If generator is not a string.
+
+    """
+    if data.empty is True:
+        msg = f"Input data ({type(data)}) is empty. Please use data_download() with valid inputs as input data."
+        raise ValueError(msg)
+
+    columns = ["Open", "Close"]
+    for cols in columns:
+        if not any(data.columns == cols):
+            msg = f"Input data has columns {data.columns}. It is missing column {cols}. Please use data_download with valid inputs as input data."
+            raise ValueError(msg)
+
+    if not isinstance(generator, str):
+        msg = f"Wrong input generator ({type(generator)}). 'generator' has to be type string."
+        raise TypeError(msg)
+
+    og_strategies = ["_random_signal_gen", "_simple_signal_gen"]
+    if generator not in og_strategies:
+        msg = f"Selected trading strategy ({generator}) is not available. Please choose at least one from "
+        raise ValueError(msg)
+
+
+def _handle_errors_random_signal_gen(prob_zero, prob_one, prob_two):
+    """Handle type and value errors for _random_signal_gen.
+
+    Raises:
+    - ValueError: If input probabilities are each not between 0 and 1 or together are greater than 1.
+
+    """
+    probabilities = [prob_zero, prob_one, prob_two]
+    for probs in probabilities:
+        if probs > 1 or probs < 0:
+            msg = f"Input probability ({probs}) is not between 0 and 1. Please choose a probability which is between 0 and 1."
+            raise ValueError(msg)
+
+    total_prob = sum(probabilities)
+    if total_prob > 1:
+        msg = f"Sum of all given probabilities is greater 1 ({probabilities}). Sum has to be smaller or equal to 1."
+        raise ValueError(msg)
