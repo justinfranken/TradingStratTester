@@ -136,6 +136,6 @@ def _handle_errors_random_signal_gen(prob_zero, prob_one, prob_two):
             raise ValueError(msg)
 
     total_prob = sum(probabilities)
-    if total_prob > 1:
-        msg = f"Sum of all given probabilities is greater 1 ({probabilities}). Sum has to be smaller or equal to 1."
+    if total_prob != 1:
+        msg = f"Sum of all given probabilities is not equal to 1 ({probabilities}). Sum has to be equal to 1."
         raise ValueError(msg)

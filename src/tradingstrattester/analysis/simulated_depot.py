@@ -4,16 +4,18 @@ import math
 
 import numpy as np
 import pandas as pd
-from tradingstrattester.config import (
-    BLD,
+from tradingstrattester.config import BLD
+
+
+def simulated_depot(
+    signal_dict,
+    strategy,
+    _id,
     initial_depot_cash,
     start_stock_prct,
     unit_strat,
     unit_var,
-)
-
-
-def simulated_depot(signal_dict, strategy, _id):
+):
     """Simulates a trading strategy on multiple assets specified in ASSETS from the
     config.py file.
 
@@ -37,6 +39,7 @@ def simulated_depot(signal_dict, strategy, _id):
         units, cash, value = _initialize_variables(
             data,
             initial_depot_cash,
+            start_stock_prct,
         )
 
         for i in range(1, len(signal)):
@@ -60,7 +63,7 @@ def simulated_depot(signal_dict, strategy, _id):
     }
 
 
-def _initialize_variables(data, initial_depot_cash):
+def _initialize_variables(data, initial_depot_cash, start_stock_prct):
     """Initializes variables for simulating the trading depot.
 
     Args:

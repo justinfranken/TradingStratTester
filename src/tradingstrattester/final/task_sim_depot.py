@@ -4,7 +4,15 @@ import pickle
 
 import pytask
 from tradingstrattester.analysis.simulated_depot import simulated_depot
-from tradingstrattester.config import BLD, STRATEGIES, _id
+from tradingstrattester.config import (
+    BLD,
+    STRATEGIES,
+    _id,
+    initial_depot_cash,
+    start_stock_prct,
+    unit_strat,
+    unit_var,
+)
 
 for strategy in STRATEGIES:
 
@@ -23,6 +31,10 @@ for strategy in STRATEGIES:
             signal_dict,
             strategy,
             _id,
+            initial_depot_cash,
+            start_stock_prct,
+            unit_strat,
+            unit_var,
         )
 
         with open(produces, "wb") as file:
