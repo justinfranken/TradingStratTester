@@ -3,6 +3,7 @@
 import math
 import pickle
 
+import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from tradingstrattester.config import STRATEGIES
@@ -97,7 +98,7 @@ def _add_asset_candlesticks(fig, data, id):
             high=data.High,
             low=data.Low,
             close=data.Close,
-            name=f"{id.split('.')[0].split('_')[1]} price",
+            name=f"{id.split('.')[0].split('_')[1]} OHLC",
         ),
         secondary_y=False,
     )
@@ -119,6 +120,87 @@ def _add_figure_layout_asset_strategy(fig, id):
     fig.update_xaxes(title_text="Dates")
     fig.update_yaxes(title_text="<b>Depot value</b>", secondary_y=True)
     fig.update_yaxes(title_text="<b>Asset price</b>", secondary_y=False)
+
+
+def plot_units_and_cash(data, id, depends_on):
+    """Plot units count and cash value for each different strategies.
+
+    Parameters:
+        data (pd.DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
+        id (str): The identifier for the asset including the ending "[...].pkl", e.g. "60m_DB.pkl".
+        depends_on (list): A list of file paths to the simulated depots for each strategy.
+
+    Returns:
+        fig (go.Figure): The Plotly figure object containing units count and cash value.
+
+    """
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    _add_unit_and_cash_traces(fig, data, id, depends_on)
+
+    _add_figure_layout_unit_and_cash(fig, id)
+
+    return fig
+
+
+def _add_unit_and_cash_traces(fig, data, id, depends_on):
+    """Add units and cash traces to the plot.
+
+    Parameters:
+        fig (go.Figure): The Plotly figure object.
+        data (pd.DataFrame): The DataFrame containing asset opening, high, low, and closing data from the data_download() function.
+        id (str): The identifier for the asset including the ending "[...].pkl", e.g. "60m_DB.pkl".
+        depends_on (list): A list of file paths to the simulated depots for each strategy.
+
+    """
+    depot_out = {}
+    indicator = -1
+    for strategy in STRATEGIES:
+        indicator += 1
+        with open(depends_on[indicator], "rb") as file:
+            depot_out[strategy] = pickle.load(file)
+
+        color = px.colors.qualitative.Plotly[
+            indicator % len(px.colors.qualitative.Plotly)
+        ]
+
+        # Cash trace
+        fig.add_scatter(
+            x=data.index,
+            y=depot_out[strategy]["cash_dict"][id.split(".")[0]],
+            mode="lines",
+            name=f"Cash{strategy}",
+            line={"width": 1, "color": color},
+            secondary_y=True,
+        )
+
+        # Unit trace
+        fig.add_scatter(
+            x=data.index,
+            y=depot_out[strategy]["unit_dict"][id.split(".")[0]],
+            mode="lines",
+            name=f"Unit{strategy}",
+            line={"shape": "linear", "dash": "dot", "width": 1.5, "color": color},
+            secondary_y=False,
+        )
+
+
+def _add_figure_layout_unit_and_cash(fig, id):
+    """Add layout to the asset strategy figure.
+
+    Parameters:
+        fig (go.Figure): The Plotly figure object.
+        id (str): The identifier for the asset including the ending "[...].pkl", e.g. "60m_DB.pkl".
+
+    """
+    fig.update_layout(
+        title_text=f"<b>Development of Units and Cash for {id.split('.')[0]}<b>",
+        xaxis_rangeslider_visible=False,
+    )
+
+    fig.update_xaxes(title_text="Dates")
+    fig.update_yaxes(title_text="<b>Cash value</b>", secondary_y=True)
+    fig.update_yaxes(title_text="<b>Units count</b>", secondary_y=False)
 
 
 def plot_indicators(data, id, initial_depot_cash, depends_on):
