@@ -7,8 +7,8 @@ BLD = SRC.joinpath("..", "..", "bld").resolve()
 TEST_DIR = SRC.joinpath("..", "..", "tests").resolve()
 PAPER_DIR = SRC.joinpath("..", "..", "paper").resolve()
 
-FREQUENCIES = ["2m", "60m", "1d"]
-ASSETS = ["MSFT", "DB", "EURUSD=X", "GC=F", "^TNX"]
+FREQUENCIES = ["5m", "60m", "1d"]
+ASSETS = ["MSFT", "DB", "EURUSD=X", "GC=F"]
 _id = [f"{frequency}_{asset}.pkl" for frequency in FREQUENCIES for asset in ASSETS]
 
 ## Simulating depot configurations

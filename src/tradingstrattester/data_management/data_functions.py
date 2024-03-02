@@ -3,7 +3,7 @@
 from datetime import date, datetime, timedelta
 
 import yfinance as yf
-from tradingstrattester.config import ASSETS, FREQUENCIES
+from tradingstrattester.config import FREQUENCIES
 
 
 def data_download(symbol, frequency="60m", start_date=None, end_date=None):
@@ -23,7 +23,16 @@ def data_download(symbol, frequency="60m", start_date=None, end_date=None):
     _handle_errors_data_download(start_date, end_date, frequency)
     dates = _define_dates(frequency=frequency, start_date=start_date, end_date=end_date)
 
-    return yf.download(symbol, start=dates[0], end=dates[1], interval=frequency)
+    temp = yf.download(symbol, start=dates[0], end=dates[1], interval=frequency)
+
+    if temp.empty:
+        msg = f"Input symbol(s) ('{symbol}') is (are) invalid. Please choose a valid input ticker-symbol from Yahoo Finance."
+        raise TypeError(msg)
+
+    else:
+        out = temp
+
+    return out
 
 
 def _define_dates(frequency, start_date=None, end_date=None):
@@ -130,17 +139,9 @@ def _handle_errors_data_download(start_date, end_date, frequency):
 
     Raises:
     - TypeError: If start_date or end_date is not a string nor a type(None). If frequency is not a string.
-    - ValueError: If start_date or end_date have not the correct 'YYYY-MM-DD' format or end_date <= start_date. If selected frequency is not available or FREQUENCIES is empty.
+    - ValueError: If start_date or end_date have not the correct 'YYYY-MM-DD' format or end_date <= start_date. If selected frequency is not available.
 
     """
-    # Check if FREQUENCIES and ASSETS are not empty
-    config_var = [FREQUENCIES, ASSETS]
-    config_var_names = ["FREQUENCIES", "ASSETS"]
-    for var in [0, 1]:
-        if not config_var[var]:
-            msg = f"{config_var_names[var]} is empty. Please specify at least one valid input for {config_var_names[var]} in the config.py file."
-            raise ValueError(msg)
-
     # Check if frequency has correct type and format
     if not isinstance(frequency, str):
         msg = f"{frequency} is {type(frequency)} but must be a string."
@@ -187,3 +188,12 @@ def _handle_errors_data_download(start_date, end_date, frequency):
         raise ValueError(
             msg,
         )
+
+
+def handle_config_variable_errors_in_task_data(FREQUENCIES, ASSETS, STRATEGIES):
+    config_var = [FREQUENCIES, ASSETS, STRATEGIES]
+    config_var_names = ["FREQUENCIES", "ASSETS", "STRATEGIES"]
+    for var in [0, 1, 2]:
+        if not config_var[var]:
+            msg = f"{config_var_names[var]} is empty. Please specify at least one valid input for {config_var_names[var]} in the config.py file."
+            raise ValueError(msg)

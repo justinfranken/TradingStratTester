@@ -13,6 +13,10 @@ for asset in ASSETS:
         produces=BLD / "python" / "data" / f"1d_{asset}.pkl",
     ):
         """Download financial data and store it in the bld folder."""
+        if not FREQUENCIES:
+            msg = "'FREQUENCIES' is empty. Please specify at least one valid entry in 'FREQUENCIES' in the config.py file."
+            raise ValueError(msg)
+
         data_1d = data_download(
             symbol,
             end_date="2024-01-01",
@@ -38,5 +42,9 @@ for frequency in FREQUENCIES:
             produces=BLD / "python" / "data" / f"{_id[state]}.pkl",
         ):
             """Download financial data and store it in the bld folder."""
+            if not FREQUENCIES:
+                msg = "'FREQUENCIES' is empty. Please specify at least one valid entry in 'FREQUENCIES' in the config.py file."
+                raise ValueError(msg)
+
             high_frequency_data = data_download(symbol, frequency=frequency)
             high_frequency_data.to_pickle(produces)
