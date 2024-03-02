@@ -3,7 +3,7 @@
 from datetime import date, datetime, timedelta
 
 import yfinance as yf
-from tradingstrattester.config import FREQUENCIES
+from tradingstrattester.config import ASSETS, FREQUENCIES
 
 
 def data_download(symbol, frequency="60m", start_date=None, end_date=None):
@@ -39,7 +39,7 @@ def _define_dates(frequency, start_date=None, end_date=None):
 
     """
     # Define correct start_date and end_date strings
-    MAX_DAYS = _get_max_days(FREQUENCIES)
+    MAX_DAYS = __get_max_days(FREQUENCIES)
     max_days_for_frequency = dict(zip(FREQUENCIES, MAX_DAYS))
 
     if frequency == "1d" and start_date is None:
@@ -80,14 +80,67 @@ def _define_dates(frequency, start_date=None, end_date=None):
     return start_date_result, end_date.strftime("%Y-%m-%d")
 
 
+def __get_max_days(FREQUENCIES):
+    """Get the maximum days corresponding to the given frequencies.
+
+    Args:
+        FREQUENCIES (list of str): A list of frequency strings for which maximum days are to be retrieved.
+
+    Returns:
+        list of int: A list containing the maximum days corresponding to the given frequencies.
+
+    """
+    out = []
+    frequencies_all = [
+        "1m",
+        "2m",
+        "5m",
+        "15m",
+        "30m",
+        "60m",
+        "90m",
+        "1d",
+        "5d",
+        "1wk",
+        "1mo",
+        "3mo",
+    ]
+    max_days_all = [
+        7,
+        59,
+        59,
+        59,
+        59,
+        729,
+        59,
+        10**1000,
+        10**1000,
+        10**1000,
+        10**1000,
+        10**1000,
+    ]
+    for freq in FREQUENCIES:
+        index = frequencies_all.index(freq)
+        out.append(max_days_all[index])
+    return out
+
+
 def _handle_errors_data_download(start_date, end_date, frequency):
-    """Handle type and value errors for _define_dates.
+    """Handle type and value errors for data_download.
 
     Raises:
     - TypeError: If start_date or end_date is not a string nor a type(None). If frequency is not a string.
-    - ValueError: If start_date or end_date have not the correct 'YYYY-MM-DD' format or end_date <= start_date. If selected frequency is not available.
+    - ValueError: If start_date or end_date have not the correct 'YYYY-MM-DD' format or end_date <= start_date. If selected frequency is not available or FREQUENCIES is empty.
 
     """
+    # Check if FREQUENCIES and ASSETS are not empty
+    config_var = [FREQUENCIES, ASSETS]
+    config_var_names = ["FREQUENCIES", "ASSETS"]
+    for var in [0, 1]:
+        if not config_var[var]:
+            msg = f"{config_var_names[var]} is empty. Please specify at least one valid input for {config_var_names[var]} in the config.py file."
+            raise ValueError(msg)
+
     # Check if frequency has correct type and format
     if not isinstance(frequency, str):
         msg = f"{frequency} is {type(frequency)} but must be a string."
@@ -134,48 +187,3 @@ def _handle_errors_data_download(start_date, end_date, frequency):
         raise ValueError(
             msg,
         )
-
-
-def _get_max_days(FREQUENCIES):
-    """Get the maximum days corresponding to the given frequencies.
-
-    Args:
-        FREQUENCIES (list of str): A list of frequency strings for which maximum days are to be retrieved.
-
-    Returns:
-        list of int: A list containing the maximum days corresponding to the given frequencies.
-
-    """
-    out = []
-    frequencies_all = [
-        "1m",
-        "2m",
-        "5m",
-        "15m",
-        "30m",
-        "60m",
-        "90m",
-        "1d",
-        "5d",
-        "1wk",
-        "1mo",
-        "3mo",
-    ]
-    max_days_all = [
-        7,
-        59,
-        59,
-        59,
-        59,
-        729,
-        59,
-        10**1000,
-        10**1000,
-        10**1000,
-        10**1000,
-        10**1000,
-    ]
-    for freq in FREQUENCIES:
-        index = frequencies_all.index(freq)
-        out.append(max_days_all[index])
-    return out

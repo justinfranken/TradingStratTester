@@ -33,7 +33,9 @@ def simulated_depot(
     - dict: A dictionary containing cash, units, and portfolio value balances for each asset specified in ASSET from the config.py file.
 
     """
-    _handle_errors_in_sim_depot_config_vars(
+    _handle_errors_in_input_variables(
+        signal_dict,
+        strategy,
         initial_depot_cash,
         start_stock_prct,
         unit_strat,
@@ -220,7 +222,34 @@ def __volatility_unit_trades(i, data, value, unit_var):
     return unit if i <= 50 else math.floor(np.std(data.Close.iloc[i - 50 : i]) * unit)
 
 
-def _handle_errors_in_sim_depot_config_vars(
+def _handle_errors_in_input_variables(
+    signal_dict,
+    strategy,
+    initial_depot_cash,
+    start_stock_prct,
+    unit_strat,
+    unit_var,
+):
+    if not isinstance(strategy, str):
+        msg = f"'strategy' has to be of type str and not {type(strategy)}."
+        raise TypeError(msg)
+
+    if not isinstance(signal_dict, dict):
+        msg = f"'signal_dict' has to be of type dict and not {type(signal_dict)}."
+        raise TypeError(msg)
+    if not signal_dict:
+        msg = "'signal_dict' is empty. Please specify signal list for signal_dict."
+        raise ValueError(msg)
+
+    __handle_errors_in_sim_depot_config_vars(
+        initial_depot_cash,
+        start_stock_prct,
+        unit_strat,
+        unit_var,
+    )
+
+
+def __handle_errors_in_sim_depot_config_vars(
     initial_depot_cash,
     start_stock_prct,
     unit_strat,

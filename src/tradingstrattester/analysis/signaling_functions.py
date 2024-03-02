@@ -1,5 +1,6 @@
 """Functions for indicating when to buy, sell or do nothing."""
 import numpy as np
+from tradingstrattester.config import STRATEGIES
 
 
 def signal_list(data, generator):
@@ -102,6 +103,10 @@ def _handle_errors_signal_list(data, generator):
     - TypeError: If generator is not a string.
 
     """
+    if not STRATEGIES:
+        msg = "STRATEGIES is empty. Please specify at least one valid input for STRATEGIES in the config.py file."
+        raise ValueError(msg)
+
     if data.empty is True:
         msg = f"Input data ({type(data)}) is empty. Please use data_download() with valid inputs as input data."
         raise ValueError(msg)

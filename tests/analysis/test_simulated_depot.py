@@ -2,10 +2,12 @@
 
 import pytest
 from tradingstrattester.analysis.simulated_depot import (
-    _handle_errors_in_sim_depot_config_vars,
+    __handle_errors_in_sim_depot_config_vars,
+    _handle_errors_in_input_variables,
     simulated_depot,
 )
 from tradingstrattester.config import (
+    STRATEGIES,
     _id,
     initial_depot_cash,
     start_stock_prct,
@@ -30,10 +32,10 @@ def test_simulated_depot_outcomes(signals, pattern):
     for id in _id:
         signal[f"signal_{id}"] = signals
     test_dict = {}
-    test_dict["_simple_signal_gen"] = signal
+    test_dict[STRATEGIES[0]] = signal
     depot = simulated_depot(
         test_dict,
-        "_simple_signal_gen",
+        STRATEGIES[0],
         _id,
         initial_depot_cash,
         start_stock_prct,
@@ -72,10 +74,10 @@ def test_initial_depot_cash_in_simulated_depot():
     for id in _id:
         signal[f"signal_{id}"] = [0, 0]
     test_dict = {}
-    test_dict["_simple_signal_gen"] = signal
+    test_dict[STRATEGIES[0]] = signal
     depot = simulated_depot(
         test_dict,
-        "_simple_signal_gen",
+        STRATEGIES[0],
         _id,
         100,
         start_stock_prct,
@@ -86,8 +88,37 @@ def test_initial_depot_cash_in_simulated_depot():
         assert depot["value_dict"][id.split(".")[0]][0] == 100
 
 
-# Test configuration variables from config.py file
+# Test signal_dict and strategy error handling
+def test_handle_error_in_input_variables():
+    with pytest.raises(TypeError):
+        _handle_errors_in_input_variables(
+            dict(range(10)),
+            1,
+            10,
+            0.25,
+            "fixed_trade_units",
+            0.05,
+        )
+        _handle_errors_in_input_variables(
+            [range(10)],
+            STRATEGIES[0],
+            10,
+            0.25,
+            "fixed_trade_units",
+            0.05,
+        )
+    with pytest.raises(ValueError):
+        _handle_errors_in_input_variables(
+            {},
+            STRATEGIES[0],
+            10,
+            0.25,
+            "fixed_trade_units",
+            0.05,
+        )
 
+
+# Test configuration variables from config.py file error handling
 type_error_inputs = [
     # wrong initial_depot_cash
     ["1000", 0.25, "fixed_trade_units", 0.1],
@@ -104,14 +135,14 @@ type_error_inputs = [
 def test_handle_errors_in_sim_depot_config_vars_type_error(type_inputs):
     """Test if _handle_errors_in_sim_depot_config_vars raises correct type errors."""
     with pytest.raises(TypeError):
-        _handle_errors_in_sim_depot_config_vars(type_inputs)
+        __handle_errors_in_sim_depot_config_vars(type_inputs)
 
 
 def test_handle_errors_in_sim_depot_config_vars_value_errors():
     with pytest.raises(ValueError):
-        _handle_errors_in_sim_depot_config_vars(-1000, 0.25, "fixed_trade_units", 0.1)
-        _handle_errors_in_sim_depot_config_vars(1000, -0.25, "fixed_trade_units", 0.1)
-        _handle_errors_in_sim_depot_config_vars(1000, 1.25, "fixed_trade_units", 0.1)
-        _handle_errors_in_sim_depot_config_vars(1000, 0.25, "test", 0.1)
-        _handle_errors_in_sim_depot_config_vars(1000, 0.25, "fixed_trade_units", -0.1)
-        _handle_errors_in_sim_depot_config_vars(1000, 0.25, "fixed_trade_units", 1.1)
+        __handle_errors_in_sim_depot_config_vars(-1000, 0.25, "fixed_trade_units", 0.1)
+        __handle_errors_in_sim_depot_config_vars(1000, -0.25, "fixed_trade_units", 0.1)
+        __handle_errors_in_sim_depot_config_vars(1000, 1.25, "fixed_trade_units", 0.1)
+        __handle_errors_in_sim_depot_config_vars(1000, 0.25, "test", 0.1)
+        __handle_errors_in_sim_depot_config_vars(1000, 0.25, "fixed_trade_units", -0.1)
+        __handle_errors_in_sim_depot_config_vars(1000, 0.25, "fixed_trade_units", 1.1)

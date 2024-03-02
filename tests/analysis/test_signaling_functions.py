@@ -6,6 +6,7 @@ from tradingstrattester.analysis.signaling_functions import (
     _random_signal_gen,
     signal_list,
 )
+from tradingstrattester.config import STRATEGIES
 from tradingstrattester.data_management.data_functions import data_download
 
 
@@ -14,15 +15,14 @@ def test_data_error_in_signal_list():
     """Test if data error handling for signal_list() works."""
     data = pd.DataFrame()
     with pytest.raises(ValueError):
-        signal_list(data, "_simple_signal_gen")
+        signal_list(data, STRATEGIES[0])
 
 
 def test_generator_error_in_signal_list():
     """Test if generator error handling for signal_list() works."""
     data = data_download("DB")
     with pytest.raises(ValueError):
-        gen = "test"
-        signal_list(data, gen)
+        signal_list(data, "test")
     with pytest.raises(TypeError):
         signal_list(data, data)
 
@@ -31,7 +31,7 @@ def test_generator_error_in_signal_list():
 def test_simple_signal_generator_outcome():
     """Test if _simple_signal_generator outcomes are as expected."""
     df = pd.DataFrame(1, index=range(10), columns=["Open", "Close"])
-    assert signal_list(df, "_simple_signal_gen") == list(np.zeros(10))
+    assert signal_list(df, STRATEGIES[0]) == list(np.zeros(10))
 
 
 # Test_random_signal_gen
