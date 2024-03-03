@@ -219,8 +219,8 @@ def plot_indicators(data, id, initial_depot_cash, depends_on):
     """
     fig = go.Figure()
 
-    start_units = math.floor(initial_depot_cash / data.Close[1])
-    rest_cash = initial_depot_cash - start_units * data.Close[1]
+    start_units = math.floor(initial_depot_cash / data.Close.iloc[1])
+    rest_cash = initial_depot_cash - start_units * data.Close.iloc[1]
 
     _add_no_strategy_indicator(fig, data, start_units, rest_cash, initial_depot_cash)
 
@@ -246,7 +246,7 @@ def _add_no_strategy_indicator(fig, data, start_units, rest_cash, initial_depot_
     fig.add_trace(
         go.Indicator(
             mode="number+gauge+delta",
-            value=start_units * data.Close[-1] + rest_cash,
+            value=start_units * data.Close.iloc[-1] + rest_cash,
             delta={"reference": initial_depot_cash},
             domain={"x": [0.15, 1], "y": _generate_intervals(len(STRATEGIES) + 1)[0]},
             title={"text": "No strategy"},

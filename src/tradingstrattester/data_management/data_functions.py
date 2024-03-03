@@ -7,7 +7,7 @@ import yfinance as yf
 from tradingstrattester.config import FREQUENCIES
 
 
-def data_download(symbol, frequency="60m", start_date=None, end_date=None):
+def data_download(symbol, frequency, start_date=None, end_date=None):
     """Download financial data for a given stock symbol within a specified time range
     and frequency.
 
