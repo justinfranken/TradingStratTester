@@ -41,8 +41,8 @@ valid_value_end = [
 EXPECTED_START = [
     "2023-01-01",
     "2023-01-01",
-    None,
-    None,
+    "1750-05-19",
+    "1750-05-19",
 ]
 EXPECTED_END = [
     "2024-01-01",

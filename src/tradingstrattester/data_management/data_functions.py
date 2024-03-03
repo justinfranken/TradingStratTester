@@ -1,5 +1,6 @@
 """Functions for downloading financial data."""
 
+import warnings
 from datetime import date, datetime, timedelta
 
 import yfinance as yf
@@ -12,7 +13,7 @@ def data_download(symbol, frequency="60m", start_date=None, end_date=None):
 
     Args:
     - symbol (str): The stock symbol for which data is being downloaded.
-    - frequency (str, optional): The frequency of the data, e.g., "1m", "5m", "15m", "60m", "90m", "1d".
+    - frequency (str, optional): The frequency of the data, e.g. "5m", "60m", "1d".
     - start_date (str, optional): The start date in the format "YYYY-MM-DD". If None, start_date will be set to the maximum possible time difference.
     - end_date (str, optional): The end date in the format "YYYY-MM-DD". If None, end_date will be set to today's date.
 
@@ -26,7 +27,7 @@ def data_download(symbol, frequency="60m", start_date=None, end_date=None):
     temp = yf.download(symbol, start=dates[0], end=dates[1], interval=frequency)
 
     if temp.empty:
-        msg = f"Input symbol(s) ('{symbol}') is (are) invalid. Please choose a valid input ticker-symbol from Yahoo Finance."
+        msg = f"Input symbol ('{symbol}') is invalid. Please choose a valid input ticker-symbol from Yahoo Finance."
         raise TypeError(msg)
 
     else:
@@ -47,46 +48,39 @@ def _define_dates(frequency, start_date=None, end_date=None):
     Tuple[Optional[str], str]: A tuple containing the formatted start and end dates in the format "YYYY-MM-DD".
 
     """
-    # Define correct start_date and end_date strings
     MAX_DAYS = __get_max_days(FREQUENCIES)
     max_days_for_frequency = dict(zip(FREQUENCIES, MAX_DAYS))
 
-    if frequency == "1d" and start_date is None:
-        start_date_result = None
-    else:
-        if start_date is not None:
-            start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
-            start_date_result = start_date.strftime("%Y-%m-%d")
-        else:
-            start_date = date.today() - timedelta(
-                days=max_days_for_frequency[frequency],
+    max_possible_start = date.today() - timedelta(
+        days=max_days_for_frequency[frequency],
+    )
+
+    if start_date is not None:
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+        start_date_result = start_date
+
+        if start_date < max_possible_start:
+            start_date_result = max_possible_start
+            warnings.warn(
+                f"start_date ({start_date}) is larger than allowed. Automatically switching to the max allowed date ({max_days_for_frequency[frequency]}).",
             )
-            start_date_result = start_date.strftime("%Y-%m-%d")
+
+    if start_date is None:
+        start_date_result = max_possible_start
 
     if end_date is not None:
         end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
     else:
         end_date = date.today()
 
-    # Check if the difference between start_date and end_date after creation does not exceed max_days and start_date < end_date
-    if frequency == "1d" and start_date is None:
-        pass
-    else:
-        max_allowed_days = max_days_for_frequency.get(frequency, None)
-        if (
-            max_allowed_days is not None
-            and (end_date - start_date).days > max_allowed_days
-        ):
-            msg = f"The difference between end_date and start_date exceeds the maximum allowed days ({max_allowed_days}) for the selected frequency."
-            raise ValueError(msg)
+    # Ensure the start date is after the end date. For high-frequency data, retrieve the maximum possible data length. For mid to long frequencies, include an extra day for end_date.
+    if start_date_result >= end_date:
+        if any(frequency == freq for freq in ["60m", "1d", "5d", "1wk", "1mo", "3mo"]):
+            end_date = start_date_result + timedelta(days=1)
+        if any(frequency == freq for freq in ["1m", "2m", "5m", "15m", "30m"]):
+            end_date = date.today()
 
-        if start_date >= end_date:
-            msg = (
-                f"end_date ({end_date}) must be greater than start_date({start_date})."
-            )
-            raise ValueError(msg)
-
-    return start_date_result, end_date.strftime("%Y-%m-%d")
+    return start_date_result.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")
 
 
 def __get_max_days(FREQUENCIES):
@@ -107,7 +101,6 @@ def __get_max_days(FREQUENCIES):
         "15m",
         "30m",
         "60m",
-        "90m",
         "1d",
         "5d",
         "1wk",
@@ -121,12 +114,11 @@ def __get_max_days(FREQUENCIES):
         59,
         59,
         729,
-        59,
-        10**1000,
-        10**1000,
-        10**1000,
-        10**1000,
-        10**1000,
+        100000,
+        100000,
+        100000,
+        100000,
+        100000,
     ]
     for freq in FREQUENCIES:
         index = frequencies_all.index(freq)
@@ -156,7 +148,6 @@ def _handle_errors_data_download(start_date, end_date, frequency):
         "15m",
         "30m",
         "60m",
-        "90m",
         "1d",
         "5d",
         "1wk",
@@ -188,12 +179,3 @@ def _handle_errors_data_download(start_date, end_date, frequency):
         raise ValueError(
             msg,
         )
-
-
-def handle_config_variable_errors_in_task_data(FREQUENCIES, ASSETS, STRATEGIES):
-    config_var = [FREQUENCIES, ASSETS, STRATEGIES]
-    config_var_names = ["FREQUENCIES", "ASSETS", "STRATEGIES"]
-    for var in [0, 1, 2]:
-        if not config_var[var]:
-            msg = f"{config_var_names[var]} is empty. Please specify at least one valid input for {config_var_names[var]} in the config.py file."
-            raise ValueError(msg)
