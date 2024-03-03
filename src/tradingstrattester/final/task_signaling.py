@@ -21,13 +21,6 @@ for strategy in STRATEGIES:
         produces=BLD / "python" / "analysis" / f"{strategy}.pkl",
     ):
         """Create a dictionary of signal lists for each strategy."""
-        if not _dependencies:
-            msg = f"No data available for the file path {BLD / 'python' / 'data'}. Please state at least one entry in 'ASSETS' and 'FREQUENCIES' in the config.py file because they are empty."
-            raise ValueError(msg)
-
-        if not STRATEGIES:
-            msg = "'STRATEGIES' is empty. Please specify at least one strategy for 'STRATEGIES' in the config.py file."
-
         strategy_dict = {}
         for i in range(len(_id)):
             name = f"signal_{_id[i]}"

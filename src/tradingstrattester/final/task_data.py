@@ -1,10 +1,10 @@
 """"Task to download the financial data and store it."""
 
 import pytask
-from tradingstrattester.config import ASSETS, BLD, FREQUENCIES
+from tradingstrattester.config import ASSETS, BLD, FREQUENCIES, end_date, start_date
 from tradingstrattester.data_management.data_functions import data_download
 
-# Task function for "1d" frequency data to generate reproducibility
+# Task function for "1d" frequency data to facilitate reproducibility
 for asset in ASSETS:
 
     @pytask.task(id=asset)
@@ -13,14 +13,10 @@ for asset in ASSETS:
         produces=BLD / "python" / "data" / f"1d_{asset}.pkl",
     ):
         """Download financial data and store it in the bld folder."""
-        if not FREQUENCIES:
-            msg = "'FREQUENCIES' is empty. Please specify at least one valid entry in 'FREQUENCIES' in the config.py file."
-            raise ValueError(msg)
-
         data_1d = data_download(
             symbol,
-            end_date="2024-01-01",
-            start_date="2004-01-01",
+            end_date=end_date,
+            start_date=start_date,
             frequency="1d",
         )
         data_1d.to_pickle(produces)
@@ -42,9 +38,5 @@ for frequency in FREQUENCIES:
             produces=BLD / "python" / "data" / f"{_id[state]}.pkl",
         ):
             """Download financial data and store it in the bld folder."""
-            if not FREQUENCIES:
-                msg = "'FREQUENCIES' is empty. Please specify at least one valid entry in 'FREQUENCIES' in the config.py file."
-                raise ValueError(msg)
-
             high_frequency_data = data_download(symbol, frequency=frequency)
             high_frequency_data.to_pickle(produces)
