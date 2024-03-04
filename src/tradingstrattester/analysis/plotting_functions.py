@@ -510,12 +510,12 @@ def _handle_depends_on_errors(depends_on):
 
     """
     if not isinstance(depends_on, list):
-        msg = "The 'depends_on' parameter must be a list."
+        msg = f"The 'depends_on' parameter must be a list and not {type(depends_on)}."
         raise TypeError(msg)
 
     for item in depends_on:
         if not isinstance(item, pathlib.WindowsPath):
-            msg = "Each element in 'depends_on' must be an instance of pathlib.WindowsPath."
+            msg = f"Each element in 'depends_on' must be an instance of pathlib.WindowsPath and not {type(depends_on[item])}."
             raise TypeError(
                 msg,
             )
