@@ -298,7 +298,7 @@ def __handle_errors_in_sim_depot_config_vars(
         msg = f"'start_stock_prct' has the wrong type ({type(start_stock_prct)}). '{start_stock_prct}' has to be of type int or float."
         raise TypeError(msg)
     if start_stock_prct <= 0 or start_stock_prct > 1:
-        msg = f"'start_stock_prct' has to be greater 0 and smaller or equal than 1, and not {start_stock_prct}."
+        msg = f"'start_stock_prct' has to be greaterthan or equal to 0 and smaller than or equal to 1, and not {start_stock_prct}."
         raise ValueError(msg)
 
     # unit_strat

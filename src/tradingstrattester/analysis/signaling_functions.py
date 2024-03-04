@@ -1,5 +1,6 @@
 """Functions for indicating when to buy, sell or do nothing."""
 import numpy as np
+import pandas as pd
 
 
 def signal_list(data, generator):
@@ -103,13 +104,17 @@ def _handle_errors_signal_list(data, generator):
 
     """
     if data.empty is True:
-        msg = f"Input data ({type(data)}) is empty. Please use data_download() with valid inputs as input data."
+        msg = f"Input data ({data}) is empty. Please use data_download() with valid inputs as input data."
         raise ValueError(msg)
 
-    columns = ["Open", "Close"]
+    if not isinstance(data, pd.core.frame.DataFrame):
+        msg = f"Wrong input type for 'data' ({type(data)}). Data has to be of type 'pd.DataFrame'."
+        raise TypeError(msg)
+
+    columns = ["Open", "High", "Low", "Close"]
     for cols in columns:
         if not any(data.columns == cols):
-            msg = f"Input data has columns {data.columns}. It is missing column {cols}. Please use data_download with valid inputs as input data."
+            msg = f"Input data has columns {data.columns}. It is missing column {cols}. Please use data_download() with valid inputs as input data."
             raise ValueError(msg)
 
     if not isinstance(generator, str):
@@ -118,7 +123,7 @@ def _handle_errors_signal_list(data, generator):
 
     og_strategies = ["_random_signal_gen", "_simple_signal_gen"]
     if generator not in og_strategies:
-        msg = f"Selected trading strategy ({generator}) is not available. Please choose at least one from "
+        msg = f"Selected trading strategy ({generator}) is not available. Please choose at least one from ({og_strategies})."
         raise ValueError(msg)
 
 

@@ -1,8 +1,6 @@
 """"Tasks for creating all analysis plots."""
 
 
-import warnings
-
 import pandas as pd
 import pytask
 from tradingstrattester.analysis.plotting_functions import (
@@ -10,8 +8,6 @@ from tradingstrattester.analysis.plotting_functions import (
     plot_indicators,
     plot_units_and_cash,
 )
-
-warnings.filterwarnings("ignore")
 from tradingstrattester.config import BLD, STRATEGIES, _id, initial_depot_cash
 
 # Preparing depending and producing paths

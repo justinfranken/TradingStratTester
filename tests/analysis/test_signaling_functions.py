@@ -30,7 +30,7 @@ def test_generator_error_in_signal_list():
 # Test _simple_signal_generator
 def test_simple_signal_generator_outcome():
     """Test if _simple_signal_generator outcomes are as expected."""
-    df = pd.DataFrame(1, index=range(10), columns=["Open", "Close"])
+    df = pd.DataFrame(1, index=range(10), columns=["Open", "High", "Low", "Close"])
     assert signal_list(df, STRATEGIES[0]) == list(np.zeros(10))
 
 

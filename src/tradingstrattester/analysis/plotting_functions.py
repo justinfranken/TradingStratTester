@@ -1,12 +1,14 @@
 """Functions for indicating when to buy or sell."""
 
 import math
+import pathlib
 import pickle
 
+import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from tradingstrattester.config import STRATEGIES
+from tradingstrattester.config import STRATEGIES, _id
 
 
 def plot_asset_strategy(data, id, initial_depot_cash, depends_on):
@@ -23,6 +25,13 @@ def plot_asset_strategy(data, id, initial_depot_cash, depends_on):
         fig (go.Figure): The Plotly figure object containing annotated asset price candlesticks and simulated depot values for each strategy.
 
     """
+    _handle_errors_in_plot_functions(
+        data=data,
+        id=id,
+        initial_depot_cash=initial_depot_cash,
+        depends_on=depends_on,
+    )
+
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     _add_strategy_traces(fig, data, id, depends_on)
@@ -134,6 +143,8 @@ def plot_units_and_cash(data, id, depends_on):
         fig (go.Figure): The Plotly figure object containing units count and cash value.
 
     """
+    _handle_errors_in_plot_functions(data=data, id=id, depends_on=depends_on)
+
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     _add_unit_and_cash_traces(fig, data, id, depends_on)
@@ -217,6 +228,12 @@ def plot_indicators(data, id, initial_depot_cash, depends_on):
         fig (go.Figure): The Plotly figure object containing annotated indicator bars of all strategies and no strategy (i.e. investing all the cash at the beginning of the investing period).
 
     """
+    _handle_errors_in_plot_functions(
+        data=data,
+        id=id,
+        initial_depot_cash=initial_depot_cash,
+        depends_on=depends_on,
+    )
     fig = go.Figure()
 
     start_units = math.floor(initial_depot_cash / data.Close.iloc[1])
@@ -394,3 +411,111 @@ def _generate_intervals(num_intervals):
         intervals.append([start, end])
         start = end + 0.09
     return intervals
+
+
+def _handle_errors_in_plot_functions(
+    data=None,
+    id=None,
+    initial_depot_cash=None,
+    depends_on=None,
+):
+    """Helper function to handle errors in the plot functions.
+
+    Raises:
+        ValueError: If data-related errors occur, such as empty data or missing columns.
+        TypeError: If type-related errors occur, such as incorrect types for id, initial_depot_cash, or depends_on.
+
+    """
+    _handle_data_errors(data)
+    _handle_id_errors(id)
+    _handle_initial_depot_cash_errors(initial_depot_cash)
+    _handle_depends_on_errors(depends_on)
+
+
+def _handle_data_errors(data):
+    """Helper function to handle errors related to input data.
+
+    Raises:
+        ValueError: If data is empty or if required columns are missing.
+        TypeError: If data is not a DataFrame.
+
+    """
+    if data.empty:
+        msg = f"Input data is empty ({data}). Please use data_download() with valid inputs as input data."
+        raise ValueError(
+            msg,
+        )
+
+    if not isinstance(data, pd.core.frame.DataFrame):
+        msg = f"Data has to be of type 'pd.DataFrame' and not {type(data)}."
+        raise TypeError(msg)
+
+    columns = ["Open", "High", "Low", "Close"]
+    for col in columns:
+        if col not in data.columns:
+            msg = f"Input data columns are ({data.columns}) and is therefore missing required column '{col}'. Please provide complete data."
+            raise ValueError(
+                msg,
+            )
+
+
+def _handle_id_errors(id):
+    """Helper function to handle errors related to identifier.
+
+    Raises:
+        ValueError: If the provided id is not available in the predefined list of strategies.
+        TypeError: If id is not a string.
+
+    """
+    if not isinstance(id, str):
+        msg = f"The identifier 'id' must be a string and not {type(id)}."
+        raise TypeError(msg)
+
+    if id not in _id:
+        msg = f"Selected identifier '{id}' is not available. Please choose from {_id}."
+        raise ValueError(
+            msg,
+        )
+
+
+def _handle_initial_depot_cash_errors(initial_depot_cash):
+    """Helper function to handle errors related to initial deposit cash.
+
+    Raises:
+        ValueError: If initial_depot_cash is not a positive value.
+        TypeError: If initial_depot_cash is not an integer or float.
+
+    """
+    if initial_depot_cash is None:
+        initial_depot_cash = 100
+
+    if not isinstance(initial_depot_cash, int | float):
+        msg = f"Initial deposit cash must be an integer or float and not {type(initial_depot_cash)}."
+        raise TypeError(
+            msg,
+        )
+
+    if initial_depot_cash <= 0:
+        msg = f"Initial deposit cash is ({initial_depot_cash}) but must be greater than zero."
+        raise ValueError(
+            msg,
+        )
+
+
+def _handle_depends_on_errors(depends_on):
+    """Helper function to handle errors related to depends_on parameter.
+
+    Raises:
+        TypeError: If depends_on is not a list or if its elements are not instances of pathlib.WindowsPath.
+
+    """
+    if not isinstance(depends_on, list):
+        msg = "The 'depends_on' parameter must be a list."
+        raise TypeError(msg)
+
+    for item in depends_on:
+        if not isinstance(item, pathlib.WindowsPath):
+            msg = "Each element in 'depends_on' must be an instance of pathlib.WindowsPath."
+            raise TypeError(
+                msg,
+            )
