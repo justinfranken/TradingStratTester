@@ -6,6 +6,7 @@ from tradingstrattester.config import ASSETS, FREQUENCIES, STRATEGIES
 
 @pytask.mark.try_first
 def task_check_config_lists():
+    """Task function to check if lists of config.py are empty."""
     config_list_vars = [FREQUENCIES, ASSETS, STRATEGIES]
     config_list_names = ["FREQUENCIES", "ASSETS", "STRATEGIES"]
     for i in [0, 1, 2]:
