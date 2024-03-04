@@ -10,6 +10,7 @@ from tradingstrattester.config import (
     _id,
     initial_depot_cash,
     start_stock_prct,
+    tac,
     unit_strat,
     unit_var,
 )
@@ -35,6 +36,7 @@ for strategy in STRATEGIES:
             start_stock_prct,
             unit_strat,
             unit_var,
+            tac,
         )
 
         with open(produces, "wb") as file:

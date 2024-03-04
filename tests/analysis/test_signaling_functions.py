@@ -20,7 +20,7 @@ def test_data_error_in_signal_list():
 
 def test_generator_error_in_signal_list():
     """Test if generator error handling for signal_list() works."""
-    data = data_download("DB")
+    data = data_download("DB", "60m")
     with pytest.raises(ValueError):
         signal_list(data, "test")
     with pytest.raises(TypeError):

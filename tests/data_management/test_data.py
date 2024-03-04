@@ -1,6 +1,6 @@
 """"Test for the data management functions."""
 
-from datetime import date
+from datetime import date, timedelta
 
 import pandas as pd
 import pytest
@@ -16,13 +16,13 @@ from tradingstrattester.data_management.data_functions import (
 @pytest.mark.parametrize("assets", ASSETS)
 def test_is_empty_data_download(assets):
     """Test if downloaded data is non-empty."""
-    assert not data_download(assets).empty
+    assert not data_download(assets, "60m").empty
 
 
 @pytest.mark.parametrize("assets", ASSETS)
 def test_is_pd_DataFrame_data_download(assets):
     """Test if downloaded data has the correct data type."""
-    assert isinstance(data_download(assets), pd.core.frame.DataFrame)
+    assert isinstance(data_download(assets, "60m"), pd.core.frame.DataFrame)
 
 
 # Test _define_dates
@@ -41,8 +41,8 @@ valid_value_end = [
 EXPECTED_START = [
     "2023-01-01",
     "2023-01-01",
-    "1750-05-19",
-    "1750-05-19",
+    (date.today() - timedelta(100000)).strftime("%Y-%m-%d"),
+    (date.today() - timedelta(100000)).strftime("%Y-%m-%d"),
 ]
 EXPECTED_END = [
     "2024-01-01",

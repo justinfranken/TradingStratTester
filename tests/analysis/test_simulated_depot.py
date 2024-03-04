@@ -11,6 +11,7 @@ from tradingstrattester.config import (
     _id,
     initial_depot_cash,
     start_stock_prct,
+    tac,
     unit_strat,
     unit_var,
 )
@@ -41,6 +42,7 @@ def test_simulated_depot_outcomes(signals, pattern):
         start_stock_prct,
         unit_strat,
         unit_var,
+        tac,
     )
 
     # Testing sell signal
@@ -83,6 +85,7 @@ def test_initial_depot_cash_in_simulated_depot():
         start_stock_prct,
         unit_strat,
         unit_var,
+        tac,
     )
     for id in _id:
         assert depot["value_dict"][id.split(".")[0]][0] == 100

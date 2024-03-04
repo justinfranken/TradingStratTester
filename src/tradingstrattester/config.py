@@ -20,6 +20,7 @@ STRATEGIES = ["_simple_signal_gen", "_random_signal_gen"]
 initial_depot_cash = 10000
 start_stock_prct = 0.25
 unit_var = 0.075
+tac = 0.005
 # possible unit trading strategies: "fixed_trade_units", "percentage_to_value_trades", "volatility_unit_trades"
 unit_strat = "percentage_to_value_trades"
 

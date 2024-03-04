@@ -15,6 +15,7 @@ def simulated_depot(
     start_stock_prct,
     unit_strat,
     unit_var,
+    tac,
 ):
     """Simulates a trading strategy on multiple assets specified in ASSETS from the
     config.py file.
@@ -58,9 +59,27 @@ def simulated_depot(
 
         for i in range(1, len(signal)):
             if signal[i] == 2:  # Sell signal
-                _execute_sell_signal(i, value, cash, units, data, unit_strat, unit_var)
+                _execute_sell_signal(
+                    i,
+                    value,
+                    cash,
+                    units,
+                    data,
+                    unit_strat,
+                    unit_var,
+                    tac,
+                )
             elif signal[i] == 1:  # Buy signal
-                _execute_buy_signal(i, value, cash, units, data, unit_strat, unit_var)
+                _execute_buy_signal(
+                    i,
+                    value,
+                    cash,
+                    units,
+                    data,
+                    unit_strat,
+                    unit_var,
+                    tac,
+                )
             else:
                 _execute_no_signal(i, cash, units)
 
@@ -96,7 +115,7 @@ def _initialize_variables(data, initial_depot_cash, start_stock_prct):
     return units, cash, value
 
 
-def _execute_sell_signal(i, value, cash, units, data, unit_strat, unit_var):
+def _execute_sell_signal(i, value, cash, units, data, unit_strat, unit_var, tac):
     """Executes sell signal for a given time step.
 
     Args:
@@ -112,14 +131,14 @@ def _execute_sell_signal(i, value, cash, units, data, unit_strat, unit_var):
     """
     trade_units = _trade_units(i, data, value, unit_strat, unit_var)
     if units[i - 1] >= trade_units:
-        cash.append(cash[i - 1] + data.Close.iloc[i] * trade_units)
+        cash.append(cash[i - 1] + data.Close.iloc[i] * trade_units * (1 - tac))
         units.append(units[i - 1] - trade_units)
     else:
         cash.append(cash[i - 1])
         units.append(units[i - 1])
 
 
-def _execute_buy_signal(i, value, cash, units, data, unit_strat, unit_var):
+def _execute_buy_signal(i, value, cash, units, data, unit_strat, unit_var, tac):
     """Executes buy signal for a given time step.
 
     Args:
@@ -136,7 +155,7 @@ def _execute_buy_signal(i, value, cash, units, data, unit_strat, unit_var):
     trade_units = _trade_units(i, data, value, unit_strat, unit_var)
     cash_required = data.Close.iloc[i] * trade_units
     if cash[i - 1] >= cash_required:
-        cash.append(cash[i - 1] - cash_required)
+        cash.append(cash[i - 1] - data.Close.iloc[i] * trade_units * (1 + tac))
         units.append(units[i - 1] + trade_units)
     else:
         cash.append(cash[i - 1])
