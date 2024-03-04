@@ -440,15 +440,15 @@ def _handle_data_errors(data):
         TypeError: If data is not a DataFrame.
 
     """
+    if not isinstance(data, pd.core.frame.DataFrame):
+        msg = f"Data has to be of type 'pd.DataFrame' and not {type(data)}."
+        raise TypeError(msg)
+
     if data.empty:
         msg = f"Input data is empty ({data}). Please use data_download() with valid inputs as input data."
         raise ValueError(
             msg,
         )
-
-    if not isinstance(data, pd.core.frame.DataFrame):
-        msg = f"Data has to be of type 'pd.DataFrame' and not {type(data)}."
-        raise TypeError(msg)
 
     columns = ["Open", "High", "Low", "Close"]
     for col in columns:
