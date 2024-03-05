@@ -406,7 +406,7 @@ def _generate_intervals(num_intervals):
     interval_width = (1 - total_gap) / num_intervals
     intervals = []
     start = 0
-    for _ in range(num_intervals):
+    for _i in range(num_intervals):
         end = start + interval_width
         intervals.append([start, end])
         start = end + 0.09
