@@ -4,12 +4,7 @@ import pytest
 from tradingstrattester.analysis.plotting_functions import (
     _handle_errors_in_plot_functions,
 )
-from tradingstrattester.config import BLD, STRATEGIES
 from tradingstrattester.data_management.data_functions import data_download
-
-_dependencies = []
-for strategy in STRATEGIES:
-    _dependencies.append(BLD / "python" / "analysis" / f"sim_depot{strategy}.pkl")
 
 ## Testing error_handling
 # error lists
