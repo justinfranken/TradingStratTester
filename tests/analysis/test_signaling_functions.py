@@ -31,22 +31,24 @@ def test_generator_error_in_signal_list():
 def test_simple_signal_generator_outcome():
     """Test if _simple_signal_generator outcomes are as expected."""
     df = pd.DataFrame(1, index=range(10), columns=["Open", "High", "Low", "Close"])
-    assert signal_list(df, STRATEGIES[0]) == list(np.zeros(10))
+    assert signal_list(df, "_simple_signal_gen") == list(np.zeros(10))
 
 
 # Test_random_signal_gen
 def test_probability_errors_in_random_signal_gen():
     """Test if probability error handling for _random_signal_gen() works."""
+    df = pd.DataFrame(1, index=range(1), columns=["Open", "High", "Low", "Close"])
     with pytest.raises(ValueError):
-        _random_signal_gen(0, 0, -0.5)
+        _random_signal_gen(df, 0, 0, -0.5)
     with pytest.raises(ValueError):
-        _random_signal_gen(0, 0, 2)
+        _random_signal_gen(df, 0, 0, 2)
     with pytest.raises(ValueError):
-        _random_signal_gen(0.5, 0.5, 0.5)
+        _random_signal_gen(df, 0.5, 0.5, 0.5)
 
 
 def test_random_signal_gen_outcome():
     """Test if _random_signal_gen() outcomes are as expected."""
-    assert _random_signal_gen(1, 0, 0) == 0
-    assert _random_signal_gen(0, 1, 0) == 1
-    assert _random_signal_gen(0, 0, 1) == 2
+    df = pd.DataFrame(1, index=range(1), columns=["Open", "High", "Low", "Close"])
+    assert _random_signal_gen(df, 1, 0, 0) == [0]
+    assert _random_signal_gen(df, 0, 1, 0) == [1]
+    assert _random_signal_gen(df, 0, 0, 1) == [2]

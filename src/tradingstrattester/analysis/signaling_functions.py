@@ -16,17 +16,14 @@ def signal_list(data, generator):
 
     """
     _handle_errors_signal_list(data, generator)
+
     signal = []
-    signal.append(0)
 
     if generator == "_random_signal_gen":
-        for i in range(1, len(data)):
-            signal.append(_random_signal_gen())
+        signal = _random_signal_gen(data)
 
     if generator == "_simple_signal_gen":
-        for i in range(1, len(data)):
-            df = data[i - 1 : i + 1]
-            signal.append(_simple_signal_generator(df))
+        signal = _simple_signal_generator(data)
 
     if generator == "_rsi_signal_gen":
         signal = _rsi_signal_gen(data)
@@ -35,7 +32,7 @@ def signal_list(data, generator):
 
 
 # Signal generator functions
-def _random_signal_gen(prob_zero=0.7, prob_one=0.15, prob_two=0.15):
+def _random_signal_gen(data, prob_zero=0.7, prob_one=0.15, prob_two=0.15):
     """Generates a random signal with specified probabilities using a random number
     generator.
 
@@ -52,8 +49,14 @@ def _random_signal_gen(prob_zero=0.7, prob_one=0.15, prob_two=0.15):
 
     """
     _handle_errors_random_signal_gen(prob_zero, prob_one, prob_two)
-    rng = np.random.default_rng()
-    return rng.choice([0, 1, 2], p=[prob_zero, prob_one, prob_two])
+
+    signal = []
+
+    for _i in range(len(data)):
+        rng = np.random.default_rng()
+        signal.append(rng.choice([0, 1, 2], p=[prob_zero, prob_one, prob_two]))
+
+    return signal
 
 
 def _simple_signal_generator(data):
@@ -70,32 +73,40 @@ def _simple_signal_generator(data):
            - 0 for no clear pattern, i.e. do nothing
 
     """
-    open = data.Open.iloc[-1]
-    close = data.Close.iloc[-1]
-    previous_open = data.Open.iloc[-2]
-    previous_close = data.Close.iloc[-2]
+    signals = [0]  # Initialize with no clear pattern for the first data point
 
-    # Bearish Pattern
-    if (
-        open > close
-        and previous_open < previous_close
-        and close < previous_open
-        and open >= previous_close
-    ):
-        return 1
+    for i in range(1, len(data)):
+        current_bar = data.iloc[i]
+        previous_bar = data.iloc[i - 1]
 
-    # Bullish Pattern
-    elif (
-        open < close
-        and previous_open > previous_close
-        and close > previous_open
-        and open <= previous_close
-    ):
-        return 2
+        open_price = current_bar["Open"]
+        close_price = current_bar["Close"]
+        previous_open = previous_bar["Open"]
+        previous_close = previous_bar["Close"]
 
-    # No clear pattern
-    else:
-        return 0
+        # Bearish Pattern
+        if (
+            open_price > close_price
+            and previous_open < previous_close
+            and close_price < previous_open
+            and open_price >= previous_close
+        ):
+            signals.append(1)  # Sell signal
+
+        # Bullish Pattern
+        elif (
+            open_price < close_price
+            and previous_open > previous_close
+            and close_price > previous_open
+            and open_price <= previous_close
+        ):
+            signals.append(2)  # Buy signal
+
+        # No clear pattern
+        else:
+            signals.append(0)  # No signal
+
+    return signals
 
 
 def _rsi_signal_gen(data, rsi_threshold_low=30, rsi_threshold_high=70, period=14):
