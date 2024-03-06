@@ -252,7 +252,7 @@ def _handle_errors_in_input_variables(
     if not isinstance(strategy, str):
         msg = f"'strategy' has to be of type str and not {type(strategy)}."
         raise TypeError(msg)
-    og_strategies = ["_random_signal_gen", "_simple_signal_gen"]
+    og_strategies = ["_random_signal_gen", "_simple_signal_gen", "_rsi_signal_gen"]
     if strategy not in og_strategies:
         msg = f"Selected trading strategy ({strategy}) is not available. Please choose at least one from "
         raise ValueError(msg)

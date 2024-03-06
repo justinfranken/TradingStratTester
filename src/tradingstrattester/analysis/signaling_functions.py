@@ -28,6 +28,9 @@ def signal_list(data, generator):
             df = data[i - 1 : i + 1]
             signal.append(_simple_signal_generator(df))
 
+    if generator == "_rsi_signal_gen":
+        signal = _rsi_signal_gen(data)
+
     return signal
 
 
@@ -95,6 +98,47 @@ def _simple_signal_generator(data):
         return 0
 
 
+def _rsi_signal_gen(data, rsi_threshold_low=30, rsi_threshold_high=70, period=14):
+    """Generate RSI (Relative Strength Index) signals based on given thresholds.
+
+    Parameters:
+    - data (pandas.DataFrame): DataFrame containing 'Close' prices.
+    - rsi_threshold_low (int, optional): The lower threshold for RSI indicating a buy signal. Default is 30.
+    - rsi_threshold_high (int, optional): The higher threshold for RSI indicating a sell signal. Default is 70.
+    - period (int, optional): The period used for calculating RSI. Default is 14.
+
+    Returns:
+    - signal (list): A list of signals corresponding to RSI conditions.
+      - 0: No signal (RSI between rsi_threshold_low and rsi_threshold_high).
+      - 1: Sell signal (RSI above rsi_threshold_high).
+      - 2: Buy signal (RSI below rsi_threshold_low).
+
+    """
+    close_prices = data.Close
+    deltas = close_prices.diff()
+
+    gain = deltas.where(deltas > 0, 0)
+    loss = -deltas.where(deltas < 0, 0)
+
+    avg_gain = gain.rolling(window=period, min_periods=1).mean()
+    avg_loss = loss.rolling(window=period, min_periods=1).mean()
+
+    rs = avg_gain / avg_loss
+    rsi = 100 - (100 / (1 + rs))
+
+    signal = []
+
+    for val in rsi:
+        if val < rsi_threshold_low:
+            signal.append(2)  # Buy signal
+        elif val > rsi_threshold_high:
+            signal.append(1)  # Sell signal
+        else:
+            signal.append(0)  # No signal
+
+    return signal
+
+
 def _handle_errors_signal_list(data, generator):
     """Handle type and value errors for signal_list.
 
@@ -121,7 +165,7 @@ def _handle_errors_signal_list(data, generator):
         msg = f"Wrong input generator ({type(generator)}). 'generator' has to be type string."
         raise TypeError(msg)
 
-    og_strategies = ["_random_signal_gen", "_simple_signal_gen"]
+    og_strategies = ["_random_signal_gen", "_simple_signal_gen", "_rsi_signal_gen"]
     if generator not in og_strategies:
         msg = f"Selected trading strategy ({generator}) is not available. Please choose at least one from ({og_strategies})."
         raise ValueError(msg)

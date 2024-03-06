@@ -12,15 +12,15 @@ FREQUENCIES = ["5m", "60m", "1d"]
 ASSETS = ["MSFT", "DB", "EURUSD=X", "GC=F"]
 # date format is YYYY-MM-DD
 start_date = "2014-01-01"
-end_date = "2024-01-01"
+end_date = "2024-03-01"
 
 ## Simulating depot configurations
 # possible signaling strategies: "_simple_signal_gen", "_random_signal_gen"
-STRATEGIES = ["_simple_signal_gen", "_random_signal_gen"]
+STRATEGIES = ["_simple_signal_gen", "_random_signal_gen", "_rsi_signal_gen"]
 initial_depot_cash = 10000
 start_stock_prct = 0.25
-unit_var = 0.075
-tac = 0.005
+unit_var = 0.05
+tac = 0
 # possible unit trading strategies: "fixed_trade_units", "percentage_to_value_trades", "volatility_unit_trades"
 unit_strat = "percentage_to_value_trades"
 
@@ -40,4 +40,5 @@ __all__ = [
     "start_stock_prct",
     "unit_strat",
     "unit_var",
+    "tac",
 ]
