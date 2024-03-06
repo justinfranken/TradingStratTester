@@ -27,11 +27,11 @@ def test_generator_error_in_signal_list():
         signal_list(data, data)
 
 
-# Test _simple_signal_generator
+# Test _crossover_gen
 def test_simple_signal_generator_outcome():
-    """Test if _simple_signal_generator outcomes are as expected."""
+    """Test if _crossover_gen() outcomes are as expected."""
     df = pd.DataFrame(1, index=range(10), columns=["Open", "High", "Low", "Close"])
-    assert signal_list(df, "_simple_signal_gen") == list(np.zeros(10))
+    assert signal_list(df, "_crossover_gen") == list(np.zeros(10))
 
 
 # Test_random_signal_gen

@@ -19,14 +19,20 @@ def signal_list(data, generator):
 
     signal = []
 
-    if generator == "_random_signal_gen":
+    if generator == "_random_gen":
         signal = _random_signal_gen(data)
 
-    if generator == "_simple_signal_gen":
-        signal = _simple_signal_generator(data)
+    if generator == "_crossover_gen":
+        signal = _crossover_signal_gen(data)
 
-    if generator == "_rsi_signal_gen":
+    if generator == "_RSI_gen":
         signal = _rsi_signal_gen(data)
+
+    if generator == "_BB_gen":
+        signal = _bollinger_bands_signal_gen(data)
+
+    if generator == "_MACD_gen":
+        signal = _macd_signal_gen(data)
 
     return signal
 
@@ -59,9 +65,9 @@ def _random_signal_gen(data, prob_zero=0.7, prob_one=0.15, prob_two=0.15):
     return signal
 
 
-def _simple_signal_generator(data):
-    """Generates a signal based on the provided data using a simple signal generation
-    algorithm.
+def _crossover_signal_gen(data):
+    """Generates signals based on simple crossover patterns in the provided financial
+    data.
 
     Parameters:
     - data (pandas.DataFrame): A DataFrame containing the financial data from data_download().
@@ -113,7 +119,7 @@ def _rsi_signal_gen(data, rsi_threshold_low=30, rsi_threshold_high=70, period=14
     """Generate RSI (Relative Strength Index) signals based on given thresholds.
 
     Parameters:
-    - data (pandas.DataFrame): DataFrame containing 'Close' prices.
+    - data (pandas.DataFrame): A DataFrame containing the financial data from data_download().
     - rsi_threshold_low (int, optional): The lower threshold for RSI indicating a buy signal. Default is 30.
     - rsi_threshold_high (int, optional): The higher threshold for RSI indicating a sell signal. Default is 70.
     - period (int, optional): The period used for calculating RSI. Default is 14.
@@ -150,6 +156,87 @@ def _rsi_signal_gen(data, rsi_threshold_low=30, rsi_threshold_high=70, period=14
     return signal
 
 
+def _bollinger_bands_signal_gen(data, window=20, num_std_dev=1.5):
+    """Generate Bollinger Bands signals based on given parameters.
+
+    Parameters:
+    - data (pandas.DataFrame): DataFrame containing 'Close' prices.
+    - window (int, optional): The window size for computing moving averages and standard deviations. Default is 20.
+    - num_std_dev (int, optional): The number of standard deviations to use for the Bollinger Bands. Default is 2.
+
+    Returns:
+    - signal (list): A list of signals corresponding to Bollinger Bands conditions.
+      - 0: No signal (price between lower and upper bands).
+      - 1: Buy signal (price below lower band).
+      - 2: Sell signal (price above upper band).
+
+    """
+    rolling_mean = data.Close.rolling(window=window).mean()
+    upper_band = rolling_mean + (data.Close.rolling(window=window).std() * num_std_dev)
+    lower_band = rolling_mean - (data.Close.rolling(window=window).std() * num_std_dev)
+
+    signal = []
+
+    for i in range(len(data)):
+        if data.Close.iloc[i] < lower_band[i]:
+            signal.append(1)  # Buy signal
+        elif data.Close.iloc[i] > upper_band[i]:
+            signal.append(2)  # Sell signal
+        else:
+            signal.append(0)  # No signal
+
+    return signal
+
+
+def _macd_signal_gen(
+    data,
+    fast_period=12,
+    slow_period=26,
+    signal_period=9,
+    threshold_multiplier=0.4,
+):
+    """Calculate MACD (Moving Average Convergence Divergence) signals.
+
+    Parameters:
+    - data (pandas.DataFrame): A DataFrame containing the financial data from data_download().
+    - fast_period (int, optional): The number of periods for the fast EMA (Exponential Moving Average). Default is 12.
+    - slow_period (int, optional): The number of periods for the slow EMA. Default is 26.
+    - signal_period (int, optional): The number of periods for the signal line. Default is 9.
+    - threshold_multiplier (float, optional): A multiplier to adjust the threshold for buy and sell signals.
+
+    Returns:
+    - signal (list): A list of signals corresponding to MACD conditions.
+      - 0: No signal (MACD between signal line plus/minus threshold).
+      - 1: Buy signal (MACD above signal line plus threshold).
+      - 2: Sell signal (MACD below signal line minus threshold).
+
+    """
+    close_prices = data.Close
+    ema_fast = close_prices.ewm(span=fast_period, min_periods=fast_period).mean()
+    ema_slow = close_prices.ewm(span=slow_period, min_periods=slow_period).mean()
+
+    macd_line = ema_fast - ema_slow
+    signal_line = macd_line.ewm(span=signal_period, min_periods=signal_period).mean()
+
+    macd_signal = []
+
+    # Compute the standard deviation of the MACD line
+    macd_std = macd_line.std()
+
+    for macd, signal in zip(macd_line, signal_line):
+        # Calculate the threshold based on the standard deviation of the MACD line
+        threshold = threshold_multiplier * macd_std
+
+        if macd > signal + threshold:
+            macd_signal.append(1)  # Buy signal
+        elif macd < signal - threshold:
+            macd_signal.append(2)  # Sell signal
+        else:
+            macd_signal.append(0)  # No signal
+
+    return macd_signal
+
+
 def _handle_errors_signal_list(data, generator):
     """Handle type and value errors for signal_list.
 
@@ -176,7 +263,13 @@ def _handle_errors_signal_list(data, generator):
         msg = f"Wrong input generator ({type(generator)}). 'generator' has to be type string."
         raise TypeError(msg)
 
-    og_strategies = ["_random_signal_gen", "_simple_signal_gen", "_rsi_signal_gen"]
+    og_strategies = [
+        "_random_gen",
+        "_crossover_gen",
+        "_RSI_gen",
+        "_BB_gen",
+        "_MACD_gen",
+    ]
     if generator not in og_strategies:
         msg = f"Selected trading strategy ({generator}) is not available. Please choose at least one from ({og_strategies})."
         raise ValueError(msg)
