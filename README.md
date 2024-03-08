@@ -4,9 +4,9 @@
 
 ## Introduction
 
-This project assesses trading strategies across different asset classes and frequencies, offering users ample flexibility to experiment with various combinations of financial assets, frequencies, and strategies. Users can adjust global variables in 'src/tradingstrattester/config.py' to explore different assets, strategies, and simulation parameters such as timing for buying, selling, or holding, as well as initial depot value, starting assets, and transaction costs. The resulting PDFs provide comparisons based on the initial configurations specified in 'config.py' for the frequency '1d' (daily), chosen for its high reproducibility.
+This project assesses trading strategies across different asset classes and frequencies, offering users ample flexibility to experiment with various combinations of financial assets, frequencies, and strategies. Users can adjust global variables in 'src/tradingstrattester/config.py' to explore different assets, strategies, and simulation parameters such as timing for buying, selling, or holding, as well as initial depot value, starting assets, and transaction costs.
 
-**Table of Content:**
+## Table of Content:
 
 - [Introduction](#introduction)
 - [Instructions on modifying the 'config.py' file:](#instructions-on-modifying-the--configpy--file-)
@@ -137,11 +137,18 @@ $ pytask
 
 The project which will then be generated is structured as follows:
 
-- **bld**: The build directory contains our analysis results. Including our plots and
-  tables.
-- **paper**: The paper directory contains our TEX-files which generate the PDF results.
+- **bld**: The build directory contains our analysis plots.
+  - **analysis**: The storage consists of pickle files containing the signaling and simulated portfolio outcomes for each individual strategy.
+  - **data**: Storage for the downloaded financial data files.
+  - **plots**: Directory comprising subdirectories corresponding to distinct output plots: assets_and_depot_value, indicator_bars, and units_and_cash.
 - **src**: The source directory contains all of our python files for generating analysis results.
+  - **analysis**: Python files containing essential functions, initiating the analysis results.
+  - **data_management**: Python file containing essential functions to download data from [Yahoo Finance](https://de.finance.yahoo.com/).
+  - **final**: Python files which generate outcomes for the 'pytask' command.
+  - **config.py**: Configurations file to change outcomes of that project. See "Instructions on modifying the 'config.py'" file for more information.
 - **test**: The test directory contains files to test the functions used for our analysis.
+  - **analysis**: Python files for testing the essential analysis functions.
+  - **data_management**: Python file which tests the data_management functions.
 
 > [!CAUTION]
 > "To ensure the proper functionality of this project, it is necessary to have an **internet connection**. This allows the project template structure to download financial data directly from [Yahoo Finance](https://de.finance.yahoo.com/). Please note that no pre-downloaded financial data will be available on this GitHub page."

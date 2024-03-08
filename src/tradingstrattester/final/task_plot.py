@@ -22,12 +22,7 @@ path_names = ["assets_and_depot_value", "indicator_bars", "units_and_cash"]
 for id in _ID:
     for i in range(len(path_names)):
         _produce_paths.append(
-            BLD
-            / "python"
-            / "analysis"
-            / "plots"
-            / path_names[i]
-            / f"{plot_names[i]}_{id.split('.')[0]}.html",
+            BLD / "plots" / path_names[i] / f"{plot_names[i]}_{id.split('.')[0]}.html",
         )
 
 # Task function for plotting

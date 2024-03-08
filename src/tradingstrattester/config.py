@@ -21,10 +21,12 @@ ASSETS = ["MSFT", "DB", "EURUSD=X", "GC=F"]
 STRATEGIES = ["_random_gen", "_crossover_gen", "_RSI_gen", "_BB_gen", "_MACD_gen"]
 # possible unit trading strategies: "fixed_trade_units", "percentage_to_value_trades", "volatility_unit_trades"
 UNIT_STRAT = "percentage_to_value_trades"
-UNIT_VAR = 0.05  # variable used in unit trade strategies
-INITIAL_DEPOT_CASH = 10000  # determines initial total depot value (int / float)
-START_STOCK_PRCT = 0.25  # determines how much of the initial cash will be invested in assets (int / float)
-TAC = 0.001  # transactionscosts per transaction (= trade_units * tac) (int / float)
+UNIT_VAR = 0.05  # variable used in unit trade strategies (positive int / float)
+INITIAL_DEPOT_CASH = (
+    10000  # determines initial total depot value (positive int / float)
+)
+START_STOCK_PRCT = 0.25  # determines how much of the initial cash will be invested in assets (positive int / float)
+TAC = 0.001  # transactionscosts per transaction (= trade_units * tac) (positive int / float)
 
 
 _ID = [f"{frequency}_{asset}.pkl" for frequency in FREQUENCIES for asset in ASSETS]
