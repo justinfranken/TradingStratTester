@@ -1,106 +1,107 @@
 # TradingStratTester
 
-[![image](https://img.shields.io/github/actions/workflow/status/justinfranken/tradingstrattester/main.yml?branch=main)](https://github.com/justinfranken/tradingstrattester/actions?query=branch%3Amain)
-[![image](https://codecov.io/gh/justinfranken/tradingstrattester/branch/main/graph/badge.svg)](https://codecov.io/gh/justinfranken/tradingstrattester)
-
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/justinfranken/tradingstrattester/main.svg)](https://results.pre-commit.ci/latest/github/justinfranken/tradingstrattester/main)
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## Introduction
 
-In this project we are trying out several different trading strategies on a simulated
-depot using different asset classes. The general goal is then to see, which strategy
-works best on which asset class. We will also use a random strategie on all asset
-classes to see if our results differ a lot from randomness.
+This project was developed to assess various trading strategies across different asset classes and frequencies. The project is designed to give users plenty of flexibility to try out various combinations of financial assets, frequencies, and strategies. Users can adjust global variables in 'src/tradingstrattester/config.py' to explore variations in assets, strategies, including the determination of traded units, timing for buying, selling, or holding, and simulation of depot configuration variables such as initial depot value, number of starting assets, and transaction costs. The resulting PDFs include comparisons of the initial configurations specified in 'config.py' for the frequency '1d' (daily) because of high reproducibility of that frequency.
 
-## Trading strategies:
+## Instructions on modifying the 'config.py' file:
 
-Our trading strategies are the following:
-
-1. ...
-1. ...
-1. ...
-1. ...
-1. Random: In this strategy we will generate random buy or sell decisions.
-
-## Asset classes:
-
-In this project we have the following asset data prepared:
-
-1. Foreign exchange courses (EUR/USD) from ... to ...
-1. Stock data (Microsoft (MSFT), Tesla (TSLA), ...) from ... to ...
-1. Bond data from ... to ...
-
-You are free to add new data to test the outcome of our trading strategies. In order to
-try out new assets you need to include the trading symbol of that
-asset from [Yahoo Finance](https://de.finance.yahoo.com/) in:
+In the 'config.py' file, users can adjust the results of the trading strategy comparisons. You can locate the 'config.py' file in the following directory:
 
 ```
 src / tradingstrattester / config.py
 ```
 
-Here you can simply change the list object **ASSET**, for example:
+Subsequently, instructions on modifying the lists and variables will be provided.
+
+### Downloading financial data configurations
+We download finanical data directly from [Yahoo Finance](https://de.finance.yahoo.com/) using the python library [yfinance](https://github.com/ranaroussi/yfinance).
+
+#### FREQUENCIES + START_DATE and END_DATE:
+
+The python library [yfinance](https://github.com/ranaroussi/yfinance) is providing the following possible frequencies:
+
+|   Frequency   | Maximum possible history from today | Variable Name
+| :---:   | :---: | :---: |
+| 1 Minute | 7 days | "1m" |
+| 2 Minute | 59 days | "2m" |
+| 5 Minute | 59 days | "5m" |
+| 15 Minute | 59 days | "15m" |
+| 30 Minute | 59 days | "30m" |
+| 60 Minute | 729 days | "60m" |
+| 1 Day | Infinity | "1d" |
+| 5 Days | Infinity | "5d" |
+| 1 Week | Infinity | "1wk" |
+| 1 Months | Infinity | "1mo" |
+| 3 Months | Infinity | "3mo" |
+
+To change FREQUENCIES, START_DATE or END_DATE change the corresponding objects. Initial FREQUENCIES, START_DATE and END_DATE (in the format 'YYYY-MM-DD') configurations are the following
+
+```python
+FREQUENCIES = ["2m", "60m", "1d"]
+START_DATE = "2014-01-01"
+END_DATE = "2024-01-01"
+```
+
+#### ASSETS:
+
+Please input valid symbols corresponding to each asset, as listed on [Yahoo Finance](https://de.finance.yahoo.com/). To modify ASSETS, adjust the corresponding object. The initial configuration for ASSETS is as follows
 
 ```python
 ASSETS = ["MSFT", "DB", "EURUSD=X", "GC=F", "^TNX"]
 ```
 
-## Frequency:
+### Simulating depot configurations
+Modifying the following objects will result in changes to the simulation's outcomes.
 
-The data we downloaded have different observed granularity. In this project we focus on
-the following frequencies:
+#### STRATEGIES:
+Following trading strategies are implemented:
 
-- **High frequency**: 2 minute, 60 minute
-- **Reproducible frequency**: 1 day, from "2004-01-01" until "2024-01-01"
+1. **Crossover Strategy** ('_crossover_gen'): The crossover strategy identifies market shifts by generating bearish signals when the current open surpasses its close and the previous open is lower than its close, and bullish signals when the current open is lower than its close and the previous open exceeds its close.
+1. **Relative Strength Index (RSI)** ('_RSI_gen'): The [RSI](https://www.investopedia.com/terms/r/rsi.asp) is a momentum indicator that has the following form: $$ RSI = 100 - \left[ \frac{100}{1 + \frac{\text{Avg. gain}}{\text{Avg. loss}}} \right].$$ It helps identify overbought (above 70) or oversold (below 30) conditions in an asset, guiding potential buying or selling opportunities accordingly.
+1. **Bollinger Bands (BB)** ('_BB_gen'): [BB's](https://www.investopedia.com/articles/technical/102201.asp) are a volatility indicator comprising a moving average and two bands laying above and below it, based on standard deviations. They dynamically adjust to market conditions, expanding during periods of high volatility and contracting during low volatility. When prices intersect with the upper Bollinger Band, it signals a sell opportunity, while intersecting with the lower band suggests a buy opportunity.
+1. **Moving Average Convergence Divergence (MACD)** ('_MACD_gen'): The [MACD](https://www.investopedia.com/terms/m/macd.asp) line is generated as follows: $$ MACD = \text{12-Period EMA} - \text{26-Period EMA} $$ where EMA stands for exponential moving average. Bullish signals occurre when the MACD line crosses above the signal line, and bearish signals when it crosses below, where a threshold considering standard deviation of the MACD line is included.
+1. **Random** ('_random_gen'): This strategy generates random buy (15%), sell (15%) or do nothing (70%) signals based on a random number generator.
 
-> [!NOTE]
-> Since [Yahoo Finance](https://de.finance.yahoo.com/) is limmiting the maximal possible history of data to download _(e.g. only 7 days back from today for frequency 1 minute)_ we fix the observed period of daily dates from "2004-01-01" until "2024-01-01" in order to have reproducible analysis results for one frequency. High frequency data is always up-to-date.
-
-But [yfinance](https://github.com/ranaroussi/yfinance) is providing several different possible frequencies:
-
-|   Frequency   | Maximum possible history from today | Variable Name | Include in 'MAX_DAYS' as |
-| :---:   | :---: | :---: | :---: |
-| 1 Minute | 7 days | "1m" | 7 |
-| 2 Minute | 60 days | "2m" | 59 |
-| 5 Minute | 60 days | "5m" | 59 |
-| 15 Minute | 60 days | "15m" | 59 |
-| 30 Minute | 60 days | "30m" | 59 |
-| 60 Minute | 730 days | "60m" | 729 |
-| 90 Minute | 60 days | "90m" | 59 |
-| 1 Day | Infinity | "1d" | 10 ** 1000 |
-| 5 Days | Infinity | "5d" | 10 ** 1000 |
-| 1 Week | Infinity | "1wk" | 10 ** 1000 |
-| 1 Months | Infinity | "1mo" | 10 ** 1000 |
-| 3 Months | Infinity | "3mo" | 10 ** 1000 |
-
-You are free to add new of the above frequencies to test the outcome of our trading
-strategies. In order to try out new frequencies you need to include the new frequency as you can see in above table in:
-
-```
-src / tradingstrattester / config.py
-```
-
-Here you can simply change the list object **FREQUENCIES** and **MAX_DAYS**:
+Please input only valid strategy names in STRATEGIES, as listed above. To modify STRATEGIES, adjust the corresponding object. The initial configuration for STRATEGIES is as follows
 
 ```python
-FREQUENCIES = ["2m", "60m", "1d"]
-MAX_DAYS = [59, 729, 10**1000]
+STRATEGIES = ["_random_gen", "_crossover_gen", "_RSI_gen", "_BB_gen", "_MACD_gen"]
 ```
 
-## Pictures / Analysis results ?!
+#### UNIT_STRAT and UNIT_VAR:
+In this project, the following unit trading strategies are available to determine the quantity of units traded for a buy or sell signal:
 
-Maybe some pictures or fancy analysis results later on ...
+1. **fixed trade units** ('fixed_trade_units'): Trade a fixed amount of units determined in UNIT_VAR (e.g. 100),
+1. **percentage to value trades** ('percentage_to_value_trades'): Calculate the number of units to trade by applying a fixed percentage of the current portfolio value determined by UNIT_VAR (e.g., 0.05).
+1. **volatility unit trades** ('volatility_unit_trades'): Calculate the number of units to trade by applying a fixed percentage of the current portfolio value determined by UNIT_VAR (e.g., 0.075), multiplied by the standard deviation of the past 10 trades.
 
-## Usage
+Please input only valid strategy names for UNIT_STRAT as listed above and **floats** or **ints** for UNIT_VAR. To modify UNIT_STRAT or UNIT_VAR, adjust the corresponding object. The initial configuration for UNIT_STRAT and UNIT_VAR is as follows
 
-To get started, create and activate the environment with
+```python
+UNIT_STRAT = "percentage_to_value_trades"
+UNIT_VAR = 0.05
+```
+
+#### Simulating depot variables (INITIAL_DEPOT_CASH, START_STOCK_PRCT, TAC):
+The following objects directly impact the simulated depot used to assess the performance of strategies across various asset/frequency combinations:
+
+1. **INITIAL_DEPOT_CASH** (int / float): This parameter sets the initial total value of the simulated portfolio.
+1. **START_STOCK_PRCT** (int / float): This parameter determines the initial number of assets (rounded down to the nearest whole integer) to be placed in the portfolio.
+1. **TAC** (int / float): This parameter defines the transaction costs per trade. The calculation is as follows: $tac per period = trade_units * tac$.
+
+## Get Started
+
+Once you've cloned this repository, you can begin by creating and activating the environment. This can be done by navigating to the directory containing 'environment.yml' and executing the following command.
 
 ```console
-$ conda/mamba env create
+$ conda/mamba env create -f environment.yml
 $ conda activate tst
 ```
 
-In order to create the full reproducible project type the following into your console,
+In order to create the project type the following into your console,
 while being in the project directory:
 
 ```console
@@ -114,9 +115,8 @@ The project which will then be generated is structured as follows:
 - **bld**: The build directory contains our analysis results. Including our plots and
   tables.
 - **paper**: The paper directory contains our TEX-files which generate the PDF results.
-- **src**: The source directory contains all of our python files for our analysis.
-- **test**: The test directory contains all of our python files to test the functions
-  used for our analysis.
+- **src**: The source directory contains all of our python files for generating analysis results.
+- **test**: The test directory contains files to test the functions used for our analysis.
 
 > [!CAUTION]
 > "To ensure the proper functionality of this project, it is necessary to have an **internet connection**. This allows the project template structure to download financial data directly from [Yahoo Finance](https://de.finance.yahoo.com/). Please note that no pre-downloaded financial data will be available on this GitHub page."
@@ -128,5 +128,5 @@ and the
 [econ-project-templates](https://github.com/OpenSourceEconomics/econ-project-templates).
 
 We furthmore used the open-source package
-[yfinance](https://github.com/ranaroussi/yfinance) to download financial data via
+[yfinance](https://github.com/ranaroussi/yfinance) to download financial data from
 [Yahoo Finance](https://de.finance.yahoo.com/).
