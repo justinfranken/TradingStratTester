@@ -4,22 +4,22 @@
 
 ## Introduction
 
-This project was developed to assess various trading strategies across different asset classes and frequencies. The project is designed to give users plenty of flexibility to try out various combinations of financial assets, frequencies, and strategies. Users can adjust global variables in 'src/tradingstrattester/config.py' to explore variations in assets, strategies, including the determination of traded units, timing for buying, selling, or holding, and simulation of depot configuration variables such as initial depot value, number of starting assets, and transaction costs. The resulting PDFs include comparisons of the initial configurations specified in 'config.py' for the frequency '1d' (daily) because of high reproducibility of that frequency.
+This project assesses trading strategies across different asset classes and frequencies, offering users ample flexibility to experiment with various combinations of financial assets, frequencies, and strategies. Users can adjust global variables in 'src/tradingstrattester/config.py' to explore different assets, strategies, and simulation parameters such as timing for buying, selling, or holding, as well as initial depot value, starting assets, and transaction costs. The resulting PDFs provide comparisons based on the initial configurations specified in 'config.py' for the frequency '1d' (daily), chosen for its high reproducibility.
 
-**Table of Contents**
-[TOC]
-## Instructions on modifying the 'config.py' file:
-### Downloading financial data configurations
-#### FREQUENCIES + START_DATE and END_DATE:
-#### ASSETS:
-### Simulating depot configurations
-#### STRATEGIES:
-#### UNIT_STRAT and UNIT_VAR:
-#### Simulating depot variables (INITIAL_DEPOT_CASH, START_STOCK_PRCT, TAC):
-## Get Started
-## Project template
-## Credits
+**Table of Content:**
 
+- [Introduction](#introduction)
+- [Instructions on modifying the 'config.py' file:](#instructions-on-modifying-the--configpy--file-)
+  * [Downloading financial data configurations](#downloading-financial-data-configurations)
+    + [FREQUENCIES + START_DATE and END_DATE:](#frequencies---start-date-and-end-date-)
+    + [ASSETS:](#assets-)
+  * [Simulating depot configurations](#simulating-depot-configurations)
+    + [STRATEGIES:](#strategies-)
+    + [UNIT_STRAT and UNIT_VAR:](#unit-strat-and-unit-var-)
+    + [Simulating depot variables (INITIAL_DEPOT_CASH, START_STOCK_PRCT, TAC):](#simulating-depot-variables--initial-depot-cash--start-stock-prct--tac--)
+- [Get Started](#get-started)
+- [Project template](#project-template)
+- [Credits](#credits)
 
 ## Instructions on modifying the 'config.py' file:
 
