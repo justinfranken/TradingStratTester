@@ -38,7 +38,13 @@ def signal_list(data, generator):
 
 
 # Signal generator functions
-def _random_signal_gen(data, prob_zero=0.7, prob_one=0.15, prob_two=0.15):
+def _random_signal_gen(
+    data,
+    prob_zero=0.7,
+    prob_one=0.15,
+    prob_two=0.15,
+    reproducible_rng_signal=True,
+):
     """Generates a random signal with specified probabilities using a random number
     generator.
 
@@ -46,6 +52,7 @@ def _random_signal_gen(data, prob_zero=0.7, prob_one=0.15, prob_two=0.15):
     - prob_zero (float): Probability of generating 0.
     - prob_one (float): Probability of generating 1.
     - prob_two (float): Probability of generating 2.
+    - reproducible_rng_signal(True or False): Boolean signaling if the outcome is reproducible. If True, the outcome is reproducible.
 
     Returns:
     - int: An integer representing the randomly generated signal:
@@ -58,8 +65,11 @@ def _random_signal_gen(data, prob_zero=0.7, prob_one=0.15, prob_two=0.15):
 
     signal = []
 
-    for _i in range(len(data)):
-        rng = np.random.default_rng()
+    for i in range(len(data)):
+        if reproducible_rng_signal is True:
+            rng = np.random.default_rng(i)
+        else:
+            rng = np.random.default_rng()
         signal.append(rng.choice([0, 1, 2], p=[prob_zero, prob_one, prob_two]))
 
     return signal

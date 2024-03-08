@@ -5,7 +5,6 @@ SRC = Path(__file__).parent.resolve()
 BLD = SRC.joinpath("..", "..", "bld").resolve()
 
 TEST_DIR = SRC.joinpath("..", "..", "tests").resolve()
-PAPER_DIR = SRC.joinpath("..", "..", "paper").resolve()
 
 ## Downloading financial data configurations
 # possible frequencies: 1m, 2m, 5m, 15m, 30m, 60m, 1d, 5d, 1wk, 1mo, 3mo

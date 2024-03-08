@@ -137,7 +137,7 @@ $ pytask
 
 The project which will then be generated is structured as follows:
 
-- **bld**: The build directory contains our analysis plots.
+- **bld**: The build directory contains our analysis results and plots.
   - **analysis**: The storage consists of pickle files containing the signaling and simulated portfolio outcomes for each individual strategy.
   - **data**: Storage for the downloaded financial data files.
   - **plots**: Directory comprising subdirectories corresponding to distinct output plots: assets_and_depot_value, indicator_bars, and units_and_cash.
@@ -151,7 +151,7 @@ The project which will then be generated is structured as follows:
   - **data_management**: Python file which tests the data_management functions.
 
 > [!CAUTION]
-> "To ensure the proper functionality of this project, it is necessary to have an **internet connection**. This allows the project template structure to download financial data directly from [Yahoo Finance](https://de.finance.yahoo.com/). Please note that no pre-downloaded financial data will be available on this GitHub page."
+> To ensure the proper functionality of this project, it is necessary to have an **internet connection**. This allows the project template structure to download financial data directly from [Yahoo Finance](https://de.finance.yahoo.com/). Please note that no pre-downloaded financial data will be available on this GitHub page.
 
 ## Credits
 
