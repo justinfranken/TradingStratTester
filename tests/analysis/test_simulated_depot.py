@@ -101,6 +101,8 @@ def test_handle_error_in_input_variables():
             0.25,
             "fixed_trade_units",
             0.05,
+            0.001,
+            0.001,
         )
         _handle_errors_in_input_variables(
             [range(10)],
@@ -109,6 +111,7 @@ def test_handle_error_in_input_variables():
             0.25,
             "fixed_trade_units",
             0.05,
+            0.001,
         )
     with pytest.raises(ValueError):
         _handle_errors_in_input_variables(
@@ -118,19 +121,21 @@ def test_handle_error_in_input_variables():
             0.25,
             "fixed_trade_units",
             0.05,
+            0.001,
         )
 
 
 # Test configuration variables from config.py file error handling
 type_error_inputs = [
     # wrong initial_depot_cash
-    ["1000", 0.25, "fixed_trade_units", 0.1],
+    ["1000", 0.25, "fixed_trade_units", 0.1, 0.001],
     # wrong start_stock_prct
-    [1000, "0.25", "fixed_trade_units", 0.1],
+    [1000, "0.25", "fixed_trade_units", 0.1, 0.001],
     # wrong unit_strat
-    [1000, 0.25, INITIAL_DEPOT_CASH, 0.1],
+    [1000, 0.25, INITIAL_DEPOT_CASH, 0.1, 0.001],
     # wrong unit_var
-    [1000, 0.25, "fixed_trade_units", "0.1"],
+    [1000, 0.25, "fixed_trade_units", "0.1", 0.001],
+    [1000, 0.25, "fixed_trade_units", 0.1, "0.001"],
 ]
 
 
@@ -143,9 +148,46 @@ def test_handle_errors_in_sim_depot_config_vars_type_error(type_inputs):
 
 def test_handle_errors_in_sim_depot_config_vars_value_errors():
     with pytest.raises(ValueError):
-        __handle_errors_in_sim_depot_config_vars(-1000, 0.25, "fixed_trade_units", 0.1)
-        __handle_errors_in_sim_depot_config_vars(1000, -0.25, "fixed_trade_units", 0.1)
-        __handle_errors_in_sim_depot_config_vars(1000, 1.25, "fixed_trade_units", 0.1)
-        __handle_errors_in_sim_depot_config_vars(1000, 0.25, "test", 0.1)
-        __handle_errors_in_sim_depot_config_vars(1000, 0.25, "fixed_trade_units", -0.1)
-        __handle_errors_in_sim_depot_config_vars(1000, 0.25, "fixed_trade_units", 1.1)
+        __handle_errors_in_sim_depot_config_vars(
+            -1000,
+            0.25,
+            "fixed_trade_units",
+            0.1,
+            0.001,
+        )
+        __handle_errors_in_sim_depot_config_vars(
+            1000,
+            -0.25,
+            "fixed_trade_units",
+            0.1,
+            0.001,
+        )
+        __handle_errors_in_sim_depot_config_vars(
+            1000,
+            1.25,
+            "fixed_trade_units",
+            0.1,
+            0.001,
+        )
+        __handle_errors_in_sim_depot_config_vars(1000, 0.25, "test", 0.1, 0.001)
+        __handle_errors_in_sim_depot_config_vars(
+            1000,
+            0.25,
+            "fixed_trade_units",
+            -0.1,
+            0.001,
+        )
+        __handle_errors_in_sim_depot_config_vars(
+            1000,
+            0.25,
+            "fixed_trade_units",
+            1.1,
+            0.001,
+        )
+        __handle_errors_in_sim_depot_config_vars(
+            1000,
+            0.25,
+            "fixed_trade_units",
+            1.1,
+            -0.001,
+        )

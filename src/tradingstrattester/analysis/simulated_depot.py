@@ -41,6 +41,7 @@ def simulated_depot(
         start_stock_prct,
         unit_strat,
         unit_var,
+        tac,
     )
 
     cash_dict = {}
@@ -248,6 +249,7 @@ def _handle_errors_in_input_variables(
     start_stock_prct,
     unit_strat,
     unit_var,
+    tac,
 ):
     if not isinstance(strategy, str):
         msg = f"'strategy' has to be of type str and not {type(strategy)}."
@@ -275,6 +277,7 @@ def _handle_errors_in_input_variables(
         start_stock_prct,
         unit_strat,
         unit_var,
+        tac,
     )
 
 
@@ -283,6 +286,7 @@ def __handle_errors_in_sim_depot_config_vars(
     start_stock_prct,
     unit_strat,
     unit_var,
+    tac,
 ):
     """Handle type and value errors for sim depot input variables from config.py.
 
@@ -326,4 +330,12 @@ def __handle_errors_in_sim_depot_config_vars(
         raise TypeError(msg)
     if unit_var <= 0 or unit_var > 1:
         msg = f"'unit_var' has to be greater 0 and smaller or equal than 1, and not {unit_var}."
+        raise ValueError(msg)
+
+    # tac
+    if not isinstance(tac, int | float):
+        msg = f"'tac' has the wrong type ({type(tac)}). '{tac}' has to be of type int or float."
+        raise TypeError(msg)
+    if tac < 0:
+        msg = f"Wrong input for 'tac' ({tac}). Input has to be greater than 0."
         raise ValueError(msg)
