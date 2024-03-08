@@ -6,6 +6,8 @@
 
 This project assesses trading strategies across different asset classes and frequencies, offering users ample flexibility to experiment with various combinations of financial assets, frequencies, and strategies. Users can adjust global variables in 'src/tradingstrattester/config.py' to explore different assets, strategies, and simulation parameters such as timing for buying, selling, or holding, as well as initial depot value, starting assets, and transaction costs.
 
+![alt text](https://www.forex.academy/wp-content/uploads/2019/12/Black-body-1.jpg)
+
 ## Table of Content:
 
 - [Introduction](#introduction)
