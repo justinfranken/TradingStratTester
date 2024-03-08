@@ -17,10 +17,12 @@ end_date = "2024-03-01"
 ## Simulating depot configurations
 # possible signaling strategies: "_random_gen", "_crossover_gen", "_RSI_gen", "_BB_gen", "_MACD_gen"
 STRATEGIES = ["_random_gen", "_crossover_gen", "_RSI_gen", "_BB_gen", "_MACD_gen"]
-initial_depot_cash = 10000
-start_stock_prct = 0.25
-unit_var = 0.05
-tac = 0.001
+initial_depot_cash = 10000  # determines initial total depot value
+start_stock_prct = (
+    0.25  # determines how much of the initial cash will be invested in assets
+)
+unit_var = 0.05  # variable used in unit trade strategies
+tac = 0.001  # transactionscosts per transaction (= trade_units * tac)
 # possible unit trading strategies: "fixed_trade_units", "percentage_to_value_trades", "volatility_unit_trades"
 unit_strat = "percentage_to_value_trades"
 

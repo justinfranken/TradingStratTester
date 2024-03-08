@@ -38,13 +38,13 @@ valid_value_end = [
     "2024-01-01",
     None,
 ]
-EXPECTED_START = [
+exp_start_out = [
     "2023-01-01",
     "2023-01-01",
     (date.today() - timedelta(100000)).strftime("%Y-%m-%d"),
     (date.today() - timedelta(100000)).strftime("%Y-%m-%d"),
 ]
-EXPECTED_END = [
+exp_end_out = [
     "2024-01-01",
     date.today().strftime("%Y-%m-%d"),
     "2024-01-01",
@@ -54,7 +54,7 @@ EXPECTED_END = [
 
 @pytest.mark.parametrize(
     ("start_date", "end_date", "expected_start", "expected_end"),
-    zip(valid_value_start, valid_value_end, EXPECTED_START, EXPECTED_END),
+    zip(valid_value_start, valid_value_end, exp_start_out, exp_end_out),
 )
 def test__define_dates_outcome(start_date, end_date, expected_start, expected_end):
     """Test the outcome of _define_dates."""
