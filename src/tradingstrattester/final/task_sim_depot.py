@@ -5,14 +5,14 @@ import pickle
 import pytask
 from tradingstrattester.analysis.simulated_depot import simulated_depot
 from tradingstrattester.config import (
+    _ID,
     BLD,
+    INITIAL_DEPOT_CASH,
+    START_STOCK_PRCT,
     STRATEGIES,
-    _id,
-    initial_depot_cash,
-    start_stock_prct,
-    tac,
-    unit_strat,
-    unit_var,
+    TAC,
+    UNIT_STRAT,
+    UNIT_VAR,
 )
 
 for strategy in STRATEGIES:
@@ -31,12 +31,12 @@ for strategy in STRATEGIES:
         sim_depot_out = simulated_depot(
             signal_dict,
             strategy,
-            _id,
-            initial_depot_cash,
-            start_stock_prct,
-            unit_strat,
-            unit_var,
-            tac,
+            _ID,
+            INITIAL_DEPOT_CASH,
+            START_STOCK_PRCT,
+            UNIT_STRAT,
+            UNIT_VAR,
+            TAC,
         )
 
         with open(produces, "wb") as file:

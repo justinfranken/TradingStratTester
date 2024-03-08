@@ -219,8 +219,6 @@ def _macd_signal_gen(
     signal_line = macd_line.ewm(span=signal_period, min_periods=signal_period).mean()
 
     macd_signal = []
-
-    # Compute the standard deviation of the MACD line
     macd_std = macd_line.std()
 
     for macd, signal in zip(macd_line, signal_line):
@@ -245,13 +243,13 @@ def _handle_errors_signal_list(data, generator):
     - TypeError: If generator is not a string.
 
     """
-    if data.empty is True:
-        msg = f"Input data ({data}) is empty. Please use data_download() with valid inputs as input data."
-        raise ValueError(msg)
-
     if not isinstance(data, pd.core.frame.DataFrame):
         msg = f"Wrong input type for 'data' ({type(data)}). Data has to be of type 'pd.DataFrame'."
         raise TypeError(msg)
+
+    if data.empty is True:
+        msg = f"Input data ({data}) is empty. Please use data_download() with valid inputs as input data."
+        raise ValueError(msg)
 
     columns = ["Open", "High", "Low", "Close"]
     for cols in columns:

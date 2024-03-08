@@ -8,7 +8,7 @@ from tradingstrattester.analysis.plotting_functions import (
     plot_indicators,
     plot_units_and_cash,
 )
-from tradingstrattester.config import BLD, STRATEGIES, _id
+from tradingstrattester.config import _ID, BLD, STRATEGIES
 from tradingstrattester.data_management.data_functions import data_download
 
 # Correct input variables
@@ -95,7 +95,7 @@ def test_value_error_data_error_handling(
 
 ## Testing expected outcomes
 # plotting functions
-@pytest.mark.parametrize("id_str", _id)
+@pytest.mark.parametrize("id_str", _ID)
 def test_outcome_of_plot_functions(id_str):
     fig_asset_strat = plot_asset_strategy(
         data,

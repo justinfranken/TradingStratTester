@@ -12,13 +12,61 @@ from tradingstrattester.analysis.signaling_functions import (
 from tradingstrattester.config import STRATEGIES
 from tradingstrattester.data_management.data_functions import data_download
 
-
 # Test signal_list
-def test_data_error_in_signal_list():
+value_error_data_list = [
+    pd.DataFrame(),
+    pd.DataFrame(1, range(2), columns=["Open", "High", "Low", "Wrong_Close"]),
+    pd.DataFrame(1, range(2), columns=["High", "Low", "Close"]),
+]
+type_error_data_list = [
+    "data",
+    range(10),
+]
+value_error_generator_list = [
+    "typo",
+    "random_gen",
+]
+type_error_generator_list = [
+    {"_random_gen"},
+    ["_random_gen"],
+]
+
+
+@pytest.mark.parametrize(
+    (
+        "value_error_data",
+        "type_error_data",
+        "value_error_generator",
+        "type_error_generator",
+    ),
+    zip(
+        value_error_data_list,
+        type_error_data_list,
+        value_error_generator_list,
+        type_error_generator_list,
+    ),
+)
+def test_error_handling_in_signal_list(
+    value_error_data,
+    type_error_data,
+    value_error_generator,
+    type_error_generator,
+):
     """Test if data error handling for signal_list() works."""
-    data = pd.DataFrame()
     with pytest.raises(ValueError):
-        signal_list(data, STRATEGIES[0])
+        signal_list(value_error_data, STRATEGIES[0])
+    with pytest.raises(TypeError):
+        signal_list(type_error_data, STRATEGIES[0])
+    with pytest.raises(ValueError):
+        signal_list(
+            pd.DataFrame(1, range(2), columns=["Open", "High", "Low", "Close"]),
+            value_error_generator,
+        )
+    with pytest.raises(TypeError):
+        signal_list(
+            pd.DataFrame(1, range(2), columns=["Open", "High", "Low", "Close"]),
+            type_error_generator,
+        )
 
 
 def test_generator_error_in_signal_list():

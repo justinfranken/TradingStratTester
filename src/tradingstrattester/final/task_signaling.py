@@ -5,10 +5,10 @@ import pickle
 import pandas as pd
 import pytask
 from tradingstrattester.analysis.signaling_functions import signal_list
-from tradingstrattester.config import BLD, STRATEGIES, _id
+from tradingstrattester.config import _ID, BLD, STRATEGIES
 
 _dependencies = []
-for i in _id:
+for i in _ID:
     _dependencies.append(BLD / "python" / "data" / i)
 
 
@@ -22,8 +22,8 @@ for strategy in STRATEGIES:
     ):
         """Create a dictionary of signal lists for each strategy."""
         strategy_dict = {}
-        for i in range(len(_id)):
-            name = f"signal_{_id[i]}"
+        for i in range(len(_ID)):
+            name = f"signal_{_ID[i]}"
             data = pd.read_pickle(depends_on[i])
             strategy_dict[name] = signal_list(data, signal_generator)
 

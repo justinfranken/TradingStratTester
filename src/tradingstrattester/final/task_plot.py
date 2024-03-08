@@ -8,7 +8,7 @@ from tradingstrattester.analysis.plotting_functions import (
     plot_indicators,
     plot_units_and_cash,
 )
-from tradingstrattester.config import BLD, STRATEGIES, _id, initial_depot_cash
+from tradingstrattester.config import _ID, BLD, INITIAL_DEPOT_CASH, STRATEGIES
 
 # Preparing depending and producing paths
 _dependencies = []
@@ -19,7 +19,7 @@ for strategy in STRATEGIES:
 _produce_paths = []
 plot_names = ["asset_and_depot_value_plot", "indicator-bar_plot", "units_and_cash_plot"]
 path_names = ["assets_and_depot_value", "indicator_bars", "units_and_cash"]
-for id in _id:
+for id in _ID:
     for i in range(len(path_names)):
         _produce_paths.append(
             BLD
@@ -32,7 +32,7 @@ for id in _id:
 
 # Task function for plotting
 index = -1
-for id in _id:
+for id in _ID:
     index += 1
     index_start = index * 3
     index_end = index_start + 3
@@ -47,11 +47,11 @@ for id in _id:
         data = pd.read_pickle(BLD / "python" / "data" / id)
 
         # Plot asset and depot_value
-        fig_asset_strat = plot_asset_strategy(data, id, initial_depot_cash, depends_on)
+        fig_asset_strat = plot_asset_strategy(data, id, INITIAL_DEPOT_CASH, depends_on)
         fig_asset_strat.write_html(produces[0])
 
         # Plot indicator bars
-        fig_indicators = plot_indicators(data, id, initial_depot_cash, depends_on)
+        fig_indicators = plot_indicators(data, id, INITIAL_DEPOT_CASH, depends_on)
         fig_indicators.write_html(produces[1])
 
         # Plot units and cash

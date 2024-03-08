@@ -7,13 +7,13 @@ from tradingstrattester.analysis.simulated_depot import (
     simulated_depot,
 )
 from tradingstrattester.config import (
+    _ID,
+    INITIAL_DEPOT_CASH,
+    START_STOCK_PRCT,
     STRATEGIES,
-    _id,
-    initial_depot_cash,
-    start_stock_prct,
-    tac,
-    unit_strat,
-    unit_var,
+    TAC,
+    UNIT_STRAT,
+    UNIT_VAR,
 )
 
 # Test simulated_depot outcomes
@@ -30,24 +30,24 @@ def test_simulated_depot_outcomes(signals, pattern):
     """Test if simulated_depot outcomes are as expected."""
 
     signal = {}
-    for id in _id:
+    for id in _ID:
         signal[f"signal_{id}"] = signals
     test_dict = {}
     test_dict[STRATEGIES[0]] = signal
     depot = simulated_depot(
         test_dict,
         STRATEGIES[0],
-        _id,
-        initial_depot_cash,
-        start_stock_prct,
-        unit_strat,
-        unit_var,
-        tac,
+        _ID,
+        INITIAL_DEPOT_CASH,
+        START_STOCK_PRCT,
+        UNIT_STRAT,
+        UNIT_VAR,
+        TAC,
     )
 
     # Testing sell signal
     if pattern == "sell":
-        for id in _id:
+        for id in _ID:
             assert (
                 depot["unit_dict"][id.split(".")[0]][1]
                 <= depot["unit_dict"][id.split(".")[0]][0]
@@ -55,7 +55,7 @@ def test_simulated_depot_outcomes(signals, pattern):
 
     # Testing buy signal
     if pattern == "buy":
-        for id in _id:
+        for id in _ID:
             assert (
                 depot["unit_dict"][id.split(".")[0]][1]
                 >= depot["unit_dict"][id.split(".")[0]][0]
@@ -63,7 +63,7 @@ def test_simulated_depot_outcomes(signals, pattern):
 
     # Testing do nothing signal
     if pattern == "nothing":
-        for id in _id:
+        for id in _ID:
             assert (
                 depot["unit_dict"][id.split(".")[0]][1]
                 == depot["unit_dict"][id.split(".")[0]][0]
@@ -73,21 +73,21 @@ def test_simulated_depot_outcomes(signals, pattern):
 def test_initial_depot_cash_in_simulated_depot():
     """Test if start value of simulated_depot() is equal to initial_depot_cash."""
     signal = {}
-    for id in _id:
+    for id in _ID:
         signal[f"signal_{id}"] = [0, 0]
     test_dict = {}
     test_dict[STRATEGIES[0]] = signal
     depot = simulated_depot(
         test_dict,
         STRATEGIES[0],
-        _id,
+        _ID,
         100,
-        start_stock_prct,
-        unit_strat,
-        unit_var,
-        tac,
+        START_STOCK_PRCT,
+        UNIT_STRAT,
+        UNIT_VAR,
+        TAC,
     )
-    for id in _id:
+    for id in _ID:
         assert depot["value_dict"][id.split(".")[0]][0] == 100
 
 
@@ -128,7 +128,7 @@ type_error_inputs = [
     # wrong start_stock_prct
     [1000, "0.25", "fixed_trade_units", 0.1],
     # wrong unit_strat
-    [1000, 0.25, initial_depot_cash, 0.1],
+    [1000, 0.25, INITIAL_DEPOT_CASH, 0.1],
     # wrong unit_var
     [1000, 0.25, "fixed_trade_units", "0.1"],
 ]

@@ -8,7 +8,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from tradingstrattester.config import STRATEGIES, _id
+from tradingstrattester.config import _ID, STRATEGIES
 
 
 def plot_asset_strategy(data, id, initial_depot_cash, depends_on):
@@ -471,8 +471,8 @@ def _handle_id_errors(id):
         msg = f"The identifier 'id' must be a string and not {type(id)}."
         raise TypeError(msg)
 
-    if id not in _id:
-        msg = f"Selected identifier '{id}' is not available. Please choose from {_id}."
+    if id not in _ID:
+        msg = f"Selected identifier '{id}' is not available. Please choose from {_ID}."
         raise ValueError(
             msg,
         )

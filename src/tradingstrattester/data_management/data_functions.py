@@ -62,7 +62,7 @@ def _define_dates(frequency, start_date=None, end_date=None):
         if start_date < max_possible_start:
             start_date_result = max_possible_start
             warnings.warn(
-                f"start_date ({start_date}) is larger than allowed. Automatically switching to the max allowed date ({max_days_for_frequency[frequency]}).",
+                f"end_data ({end_date}) - start_date ({start_date}) is larger than allowed. Automatically switching to the max allowed length ({max_days_for_frequency[frequency]}).",
             )
 
     if start_date is None:
@@ -76,8 +76,15 @@ def _define_dates(frequency, start_date=None, end_date=None):
     # Ensure the start date is after the end date. For high-frequency data, retrieve the maximum possible data length. For mid to long frequencies, include an extra day for end_date.
     if start_date_result >= end_date:
         if any(frequency == freq for freq in ["60m", "1d", "5d", "1wk", "1mo", "3mo"]):
+            warnings.warn(
+                f"Resulting start_data is greater than end_date ({start_date_result} >= {end_date}). end_date will be set to start_date + one day ({start_date_result} + one_day = {start_date_result + timedelta(days=1)}).",
+            )
             end_date = start_date_result + timedelta(days=1)
+
         if any(frequency == freq for freq in ["1m", "2m", "5m", "15m", "30m"]):
+            warnings.warn(
+                f"Resulting start_data is greater than end_date ({start_date_result} >= {end_date}). end_date will be set to todays date (end_date = {date.today()}).",
+            )
             end_date = date.today()
 
     return start_date_result.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")
