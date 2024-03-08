@@ -12,7 +12,7 @@ FREQUENCIES = ["5m", "60m", "1d"]
 ASSETS = ["MSFT", "DB", "EURUSD=X", "GC=F"]
 # date format is YYYY-MM-DD
 START_DATE = "2014-01-01"
-END_DATE = "2024-03-01"
+END_DATE = "2024-01-01"
 
 ## Simulating depot configurations
 # possible signaling strategies: "_random_gen", "_crossover_gen", "_RSI_gen", "_BB_gen", "_MACD_gen"

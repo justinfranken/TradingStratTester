@@ -178,9 +178,9 @@ def _bollinger_bands_signal_gen(data, window=20, num_std_dev=1.5):
     signal = []
 
     for i in range(len(data)):
-        if data.Close.iloc[i] < lower_band[i]:
+        if data.Close.iloc[i] < lower_band.iloc[i]:
             signal.append(1)  # Buy signal
-        elif data.Close.iloc[i] > upper_band[i]:
+        elif data.Close.iloc[i] > upper_band.iloc[i]:
             signal.append(2)  # Sell signal
         else:
             signal.append(0)  # No signal
