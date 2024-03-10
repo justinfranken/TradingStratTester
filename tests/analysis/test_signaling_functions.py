@@ -4,6 +4,9 @@ import pytest
 from tradingstrattester.analysis.signaling_functions import (
     _bollinger_bands_signal_gen,
     _crossover_signal_gen,
+    _handle_errors_bb,
+    _handle_errors_macd_gen,
+    _handle_errors_rsi,
     _macd_signal_gen,
     _random_signal_gen,
     _rsi_signal_gen,
@@ -179,7 +182,16 @@ def test_strategy_signal_generator_outcomes(
     assert _macd_signal_gen(macd_1, 2, 1, 2, 0) == macd_2
 
 
-# Test_random_signal_gen
+# Test_random_signal_gen outcomes
+def test_random_signal_gen_outcome():
+    """Test if _random_signal_gen() outcomes are as expected."""
+    df = pd.DataFrame(1, index=range(1), columns=["Open", "High", "Low", "Close"])
+    assert _random_signal_gen(df, 1, 0, 0) == [0]
+    assert _random_signal_gen(df, 0, 1, 0) == [1]
+    assert _random_signal_gen(df, 0, 0, 1) == [2]
+
+
+# Test signaling functions error handling
 def test_probability_errors_in_random_signal_gen():
     """Test if probability error handling for _random_signal_gen() works."""
     df = pd.DataFrame(1, index=range(1), columns=["Open", "High", "Low", "Close"])
@@ -191,9 +203,32 @@ def test_probability_errors_in_random_signal_gen():
         _random_signal_gen(df, 0.5, 0.5, 0.5)
 
 
-def test_random_signal_gen_outcome():
-    """Test if _random_signal_gen() outcomes are as expected."""
-    df = pd.DataFrame(1, index=range(1), columns=["Open", "High", "Low", "Close"])
-    assert _random_signal_gen(df, 1, 0, 0) == [0]
-    assert _random_signal_gen(df, 0, 1, 0) == [1]
-    assert _random_signal_gen(df, 0, 0, 1) == [2]
+def test_rsi_error_handling():
+    """Test rsi_signal_gen error handling."""
+    with pytest.raises(ValueError):
+        _handle_errors_rsi(-30, 70, 10)
+        _handle_errors_rsi(70, 30, 10)
+        _handle_errors_rsi(30, 70, -10)
+    with pytest.raises(TypeError):
+        _handle_errors_rsi("30", 70, 10)
+        _handle_errors_rsi(30, 70, 10.5)
+
+
+def test_bb_error_handling():
+    """Test bb_signal_gen error handling."""
+    with pytest.raises(ValueError):
+        _handle_errors_bb(-10, 1.5)
+        _handle_errors_bb(10, -1.5)
+    with pytest.raises(TypeError):
+        _handle_errors_bb(10.5, 1.5)
+        _handle_errors_bb(10, "1.5")
+
+
+def test_macd_error_handling():
+    """Test macd_signal_gen error handling."""
+    with pytest.raises(ValueError):
+        _handle_errors_macd_gen(-10, 10, 10, 2)
+        _handle_errors_macd_gen(10, 10, 10, -2)
+    with pytest.raises(TypeError):
+        _handle_errors_macd_gen(10.5, 10, 10, 2)
+        _handle_errors_macd_gen(10, 10, 10, "2")

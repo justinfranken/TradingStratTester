@@ -12,7 +12,10 @@ def signal_list(data, generator):
     - generator (str): The name of the signal generator function to use.
 
     Returns:
-    - list: A list of signals generated (either 0,1, or 2) based on the specified signal generator.
+    - list: A list of signals generated (either 0,1, or 2) based on the specified signal generator:
+        - 1 for a bearish pattern, i.e. sell
+        - 2 for a bullish pattern, i.e. buy
+        - 0 for no clear pattern, i.e. do nothing
 
     """
     _handle_errors_signal_list(data, generator)
@@ -141,6 +144,7 @@ def _rsi_signal_gen(data, rsi_threshold_low=30, rsi_threshold_high=70, period=14
       - 2: Buy signal (RSI below rsi_threshold_low).
 
     """
+    _handle_errors_rsi(rsi_threshold_low, rsi_threshold_high, period)
     close_prices = data.Close
     deltas = close_prices.diff()
 
@@ -181,6 +185,7 @@ def _bollinger_bands_signal_gen(data, window=20, num_std_dev=1.5):
       - 2: Sell signal (price above upper band).
 
     """
+    _handle_errors_bb(window, num_std_dev)
     rolling_mean = data.Close.rolling(window=window).mean()
     upper_band = rolling_mean + (data.Close.rolling(window=window).std() * num_std_dev)
     lower_band = rolling_mean - (data.Close.rolling(window=window).std() * num_std_dev)
@@ -221,6 +226,12 @@ def _macd_signal_gen(
       - 2: Sell signal (MACD below signal line minus threshold).
 
     """
+    _handle_errors_macd_gen(
+        fast_period,
+        slow_period,
+        signal_period,
+        threshold_multiplier,
+    )
     close_prices = data.Close
     ema_fast = close_prices.ewm(span=fast_period, min_periods=fast_period).mean()
     ema_slow = close_prices.ewm(span=slow_period, min_periods=slow_period).mean()
@@ -284,7 +295,7 @@ def _handle_errors_signal_list(data, generator):
 
 
 def _handle_errors_random_signal_gen(prob_zero, prob_one, prob_two):
-    """Handle type and value errors for _random_signal_gen.
+    """Handle value errors for _random_signal_gen.
 
     Raises:
     - ValueError: If input probabilities are each not between 0 and 1 or together are greater than 1.
@@ -300,3 +311,84 @@ def _handle_errors_random_signal_gen(prob_zero, prob_one, prob_two):
     if total_prob != 1:
         msg = f"Sum of all given probabilities is not equal to 1 ({probabilities}). Sum has to be equal to 1."
         raise ValueError(msg)
+
+
+def _handle_errors_rsi(rsi_threshold_low, rsi_threshold_high, period):
+    """Handle value and type errors for _rsi_signal_gen.
+
+    Raises:
+    - ValueError: If threshold or period are smaller than 0 or threshold greater than 100.
+    - TypeError: If period is not int or threshold is not int or float.
+
+    """
+    if rsi_threshold_low >= rsi_threshold_high:
+        msg = f"RSI threshold low is not allowed to be greater than RSI threshold high (low: {rsi_threshold_low}, high: {rsi_threshold_high})."
+        raise ValueError(msg)
+    threshold = [rsi_threshold_low, rsi_threshold_high]
+    for var in threshold:
+        if var < 0 or var > 100:
+            msg = f"RSI thresholds can not be smaller than 0 or greater than 100. Please change {var}."
+            raise ValueError(msg)
+        if not isinstance(var, int | float):
+            msg = f"RSI thresholds have to be of type int or float and not {type(var)}."
+            raise TypeError(msg)
+    __handle_errors_periods([period], ["period"])
+
+
+def _handle_errors_bb(window, num_std_dev):
+    """Handle value and type errors for _bollinger_bands_signal_gen.
+
+    Raises:
+    - ValueError: If num_std_dev or period are smaller than 0.
+    - TypeError: If window is not int or num_std_dev is not int or float.
+
+    """
+    if num_std_dev < 0:
+        msg = f"num_std_dev can not be smaller than 0. Please change {num_std_dev}."
+        raise ValueError(msg)
+    if not isinstance(num_std_dev, int | float):
+        msg = f"num_std_dev has to be of type int or float and not {type(num_std_dev)}."
+        raise TypeError(msg)
+    __handle_errors_periods([window], ["window"])
+
+
+def _handle_errors_macd_gen(
+    fast_period,
+    slow_period,
+    signal_period,
+    threshold_multiplier,
+):
+    """Handle value and type errors for _macd_signal_gen.
+
+    Raises:
+    - ValueError: If fast_period, slow_period, signal_period or threshold_multiplier are smaller than 0.
+    - TypeError: If fast_period, slow_period or signal_period is not int or threshold_multiplier is not int or float.
+
+    """
+    if threshold_multiplier < 0:
+        msg = f"threshold_multiplier can not be smaller than 0. Please change {threshold_multiplier}."
+        raise ValueError(msg)
+    if not isinstance(threshold_multiplier, int | float):
+        msg = f"threshold_multiplier has to be of type int or float and not {type(threshold_multiplier)}."
+        raise TypeError(msg)
+    __handle_errors_periods(
+        [fast_period, slow_period, signal_period],
+        ["fast_period", "slow_period", "signal_period"],
+    )
+
+
+def __handle_errors_periods(input_list, name_list):
+    """Handle value and type errors for period inputs.
+
+    Raises:
+    - ValueError: If input is not ideal to be considered as a period.
+    - TypeError: If input is not of type int.
+
+    """
+    for var in range(len(input_list)):
+        if var < 0:
+            msg = f"{name_list[var]} has to be greater than 0 and not {var}."
+            raise ValueError(msg)
+        if not isinstance(var, int):
+            msg = f"{name_list[var]} is not of type int ({type(var)})."
+            raise TypeError(msg)

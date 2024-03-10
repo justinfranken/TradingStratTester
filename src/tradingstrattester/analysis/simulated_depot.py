@@ -251,6 +251,13 @@ def _handle_errors_in_input_variables(
     unit_var,
     tac,
 ):
+    """Handle type and value errors for sim depot input variables.
+
+    Raises:
+    - TypeError: Raises TypeErrors in case inputs have not the right type.
+    - ValueError: Raises ValueErrors in case that inputs aren't in the correct format.
+
+    """
     if not isinstance(strategy, str):
         msg = f"'strategy' has to be of type str and not {type(strategy)}."
         raise TypeError(msg)
