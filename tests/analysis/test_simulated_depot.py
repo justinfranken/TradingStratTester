@@ -1,9 +1,11 @@
 """"Test for the simulating depot functions."""
 
+import pandas as pd
 import pytest
 from tradingstrattester.analysis.simulated_depot import (
     __handle_errors_in_sim_depot_config_vars,
     _handle_errors_in_input_variables,
+    _trade_units,
     simulated_depot,
 )
 from tradingstrattester.config import (
@@ -89,6 +91,20 @@ def test_initial_depot_cash_in_simulated_depot():
     )
     for id in _ID:
         assert depot["value_dict"][id.split(".")[0]][0] == 100
+
+
+# Test unit trading strategy outcomes
+data = pd.DataFrame(
+    [[1, 0, 0, 1], [1, 0, 0, 1]],
+    range(2),
+    columns=["Open", "High", "Low", "Close"],
+)
+
+
+def test_unit_trading_strats_outcome():
+    assert _trade_units(1, data, [1, 1], "fixed_trade_units", 1) == 1
+    assert _trade_units(1, data, [1, 1], "percentage_to_value_trades", 1) == 1
+    assert _trade_units(1, data, [1, 1], "volatility_unit_trades", 1) == 1
 
 
 # Test signal_dict and strategy error handling
