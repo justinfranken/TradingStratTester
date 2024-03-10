@@ -124,6 +124,7 @@ def _add_figure_layout_asset_strategy(fig, id):
     fig.update_layout(
         title_text=f"<b>{id.split('.')[0]} Asset Price and Depot Value for Different Strategies<b>",
         xaxis_rangeslider_visible=False,
+        template="none",
     )
 
     fig.update_xaxes(title_text="Dates")

@@ -2,10 +2,6 @@
 
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## Introduction
-
-This project assesses trading strategies across different asset classes and frequencies, offering users ample flexibility to experiment with various combinations of financial assets, frequencies, and strategies. Users can adjust global variables in 'src/tradingstrattester/config.py' to explore different assets, strategies, and simulation parameters such as timing for buying, selling, or holding, as well as initial depot value, starting assets, and transaction costs.
-
 ## Table of Content:
 
 - [Introduction](#introduction)
@@ -20,6 +16,10 @@ This project assesses trading strategies across different asset classes and freq
 - [Get Started](#get-started)
 - [Project template](#project-template)
 - [Credits](#credits)
+
+## Introduction
+
+This project assesses trading strategies across different asset classes and frequencies, offering users ample flexibility to experiment with various combinations of financial assets, frequencies, and strategies. Users can adjust global variables in 'src/tradingstrattester/config.py' to explore different assets, strategies, and simulation parameters such as timing for buying, selling, or holding, as well as initial depot value, starting assets, and transaction costs.
 
 ## Instructions on modifying the 'config.py' file:
 
