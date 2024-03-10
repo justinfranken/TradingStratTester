@@ -224,7 +224,7 @@ def __percentage_to_value_trades(i, data, value, unit_var):
 
 
 def __volatility_unit_trades(i, data, value, unit_var):
-    """Calculate the number of units to trade based on volatility of the past 10 trades
+    """Calculate the number of units to trade based on volatility of the past 50 trades
     and a percentage of the account value.
 
     Args:
@@ -239,7 +239,7 @@ def __volatility_unit_trades(i, data, value, unit_var):
     """
     unit = math.floor((value[i - 1] * unit_var) / data.Close.iloc[i])
 
-    return unit if i <= 10 else math.floor(np.std(data.Close.iloc[i - 10 : i]) * unit)
+    return unit if i <= 50 else math.floor(np.std(data.Close.iloc[i - 50 : i]) * unit)
 
 
 def _handle_errors_in_input_variables(

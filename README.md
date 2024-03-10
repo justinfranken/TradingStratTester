@@ -55,9 +55,9 @@ The python library [yfinance](https://github.com/ranaroussi/yfinance) is providi
 To change FREQUENCIES, START_DATE or END_DATE change the corresponding objects. Initial FREQUENCIES, START_DATE and END_DATE (in the format 'YYYY-MM-DD') configurations are the following
 
 ```python
-FREQUENCIES = ["2m", "60m", "1d"]
-START_DATE = "2014-01-01"
-END_DATE = "2024-01-01"
+FREQUENCIES = ["60m", "1d", "1wk"]
+START_DATE = "2018-01-01"
+END_DATE = "2024-03-01"
 ```
 
 #### ASSETS:
@@ -65,7 +65,7 @@ END_DATE = "2024-01-01"
 Please input valid symbols corresponding to each asset, as listed on [Yahoo Finance](https://de.finance.yahoo.com/). To modify ASSETS, adjust the corresponding object. The initial configuration for ASSETS is as follows
 
 ```python
-ASSETS = ["MSFT", "DB", "EURUSD=X", "GC=F", "^TNX"]
+ASSETS = ["DB", "KO", "^GSPC", "EURUSD=X", "CL=F"]
 ```
 
 ### Simulating depot configurations
@@ -93,7 +93,7 @@ In this project, the following unit trading strategies are available to determin
 
 1. **fixed trade units** ('fixed_trade_units'): Trade a fixed amount of units determined in UNIT_VAR (e.g. 100),
 1. **percentage to value trades** ('percentage_to_value_trades'): Calculate the number of units to trade by applying a fixed percentage of the current portfolio value determined by UNIT_VAR (e.g., 0.05).
-1. **volatility unit trades** ('volatility_unit_trades'): Calculate the number of units to trade by applying a fixed percentage of the current portfolio value determined by UNIT_VAR (e.g., 0.075), multiplied by the standard deviation of the past 10 trades.
+1. **volatility unit trades** ('volatility_unit_trades'): Calculate the number of units to trade by applying a fixed percentage of the current portfolio value determined by UNIT_VAR (e.g., 0.075), multiplied by the standard deviation of the past 50 trades.
 
 Please input only valid strategy names for UNIT_STRAT as listed above and **floats** or **ints** for UNIT_VAR. To modify UNIT_STRAT or UNIT_VAR, adjust the corresponding object. The initial configuration for UNIT_STRAT and UNIT_VAR is as follows
 

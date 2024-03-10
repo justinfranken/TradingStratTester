@@ -147,6 +147,7 @@ def test_handle_errors_in_sim_depot_config_vars_type_error(type_inputs):
 
 
 def test_handle_errors_in_sim_depot_config_vars_value_errors():
+    """Test if _handle_errors_in_sim_depot_config_vars raises correct value errors."""
     with pytest.raises(ValueError):
         __handle_errors_in_sim_depot_config_vars(
             -1000,
