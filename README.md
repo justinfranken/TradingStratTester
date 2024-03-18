@@ -19,7 +19,7 @@
 
 ## Introduction
 
-This project assesses trading strategies across different asset classes and frequencies, offering users ample flexibility to experiment with various combinations of financial assets, frequencies, and strategies. Users can adjust global variables in 'src/tradingstrattester/config.py' to explore different assets, strategies, and simulation parameters such as timing for buying, selling, or holding, as well as initial depot value, starting assets, and transaction costs.
+This project, developed as the final project for the course module Effective Programming for Economists by Janos Gabler at the University of Bonn in the Winter Semester 2023/2024, assesses trading strategies across various asset classes and frequencies. It provides users with extensive flexibility to experiment with different combinations of financial assets, frequencies, and strategies. Users can customize global variables in 'src/tradingstrattester/config.py' to explore diverse assets, strategies, and simulation parameters, including timing for buying, selling, or holding, initial depot value, starting assets, and transaction costs.
 
 ## Instructions on modifying the 'config.py' file:
 
