@@ -19,7 +19,7 @@
 
 ## Introduction
 
-This project, developed as the final project for the course module Effective Programming for Economists by Janos Gabler at the University of Bonn in the Winter Semester 2023/2024, assesses trading strategies across various asset classes and frequencies. It provides users with extensive flexibility to experiment with different combinations of financial assets, frequencies, and strategies. Users can customize global variables in 'src/tradingstrattester/config.py' to explore diverse assets, strategies, and simulation parameters, including timing for buying, selling, or holding, initial depot value, starting assets, and transaction costs.
+This project has been developed as the final project for the course module 'Effective Programming Practices for Economists' by [Janoś Gabler](https://github.com/janosg) at the University of Bonn in the Winter Semester 2023/2024. The goal of this work is to assesses trading strategies across various asset classes and frequencies. It provides users with extensive flexibility to experiment with different combinations of financial assets, frequencies, and strategies. Users can customize global variables in 'src/tradingstrattester/config.py' to explore diverse assets, strategies, and simulation parameters, including timing for buying, selling, or holding, initial depot value, starting assets, and transaction costs.
 
 ## Instructions on modifying the 'config.py' file:
 
