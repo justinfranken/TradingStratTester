@@ -22,7 +22,7 @@ STRATEGIES = ["_random_gen", "_crossover_gen", "_RSI_gen", "_BB_gen", "_MACD_gen
 UNIT_STRAT = "percentage_to_value_trades"
 UNIT_VAR = 0.05  # variable used in unit trade strategies (positive int / float)
 INITIAL_DEPOT_CASH = (
-    50_000  # determines initial total depot value (positive int / float)
+    10_000  # determines initial total depot value (positive int / float)
 )
 START_STOCK_PRCT = 0.25  # determines how much of the initial cash will be invested in assets (positive int / float)
 TAC = 0.0005  # transactionscosts per transaction (= trade_units * tac) (positive int / float)

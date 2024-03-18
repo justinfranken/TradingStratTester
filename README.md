@@ -112,9 +112,9 @@ The following objects directly impact the simulated depot used to assess the per
 The initial configurations of these simulating depot variables are as follows:
 
 ```python
-INITIAL_DEPOT_CASH = 10000
+INITIAL_DEPOT_CASH = 10_000
 START_STOCK_PRCT = 0.25
-TAC = 0.001
+TAC = 0.0005
 ```
 
 ## Get Started
